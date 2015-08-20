@@ -16,10 +16,11 @@
   "repository": "git+https://github.com/radify/collimator",
   "devDependencies": {
     "gulp": "~3.9.0",
-    "gulp-jasmine": "~2.0.1",
     "gulp-istanbul": "~0.10.0",
-    "rewire": "~2.3.4",
+    "gulp-jasmine": "~2.0.1",
     "gulp-jscs": "~2.0.0",
-    "gulp-watch": "~4.3.5"
+    "gulp-jsdoc": "^0.1.4",
+    "gulp-watch": "~4.3.5",
+    "rewire": "~2.3.4"
   }
 }
