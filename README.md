@@ -20,6 +20,34 @@ The approach to schema extraction is inspired by [DDL.js][js-ddl]. Collimator's 
 
 [js-ddl]: https://github.com/moll/js-ddl
 
+# Development
+
+Install dependencies with:
+
+```bash
+npm install
+```
+
+Run the tests with:
+
+```bash
+gulp
+```
+
+Run unit test coverage with:
+
+```bash
+gulp coverage
+```
+
+Enter development mode with:
+
+```bash
+gulp dev
+```
+
+This will watch the `src` and `spec` directories and run `gulp` automatically when a change is detected. Note that it will not run the tests until it detects a change, so you may prefer to run it with `gulp & gulp dev`.
+
 # Installation
 
 For now, clone this Git repository, followed by `npm install`.
