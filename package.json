@@ -1,0 +1,25 @@
+{
+  "name": "collimator",
+  "version": "0.0.0",
+  "description": "Reflection & Introspection for PostgreSQL Databases",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "ramda": "~0.17.1",
+    "pg-promise": "~1.8.5",
+    "bluebird": "~2.9.34"
+  },
+  "devDependencies": {
+    "gulp": "~3.9.0",
+    "gulp-jasmine": "~2.0.1",
+    "gulp-istanbul": "~0.10.0",
+    "rewire": "~2.3.4",
+    "gulp-plumber": "~1.0.1",
+    "gulp-jscs": "~2.0.0",
+    "gulp-watch": "~4.3.5"
+  }
+}
