@@ -1,3 +1,5 @@
+[![Build Status](https://magnum.travis-ci.com/radify/collimator.svg?token=3HSekyeuSZHozsotHxz2&branch=master)](https://magnum.travis-ci.com/radify/collimator)
+
 # Collimator
 
 Collimator is a JavaScript library that uses reflection techniques to introspect PostgreSQL databases:
