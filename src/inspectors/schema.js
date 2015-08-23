@@ -1,5 +1,7 @@
 'use strict';
+
 var R = require('ramda');
+var query = require('../util/fileQuery');
 
 /**
  * Inspects the column definitions for a table specified by `name`, and returns
@@ -13,8 +15,6 @@ var R = require('ramda');
  * @returns {Promise.<Object>} A promise that will resolve to the schema for the given table
  */
 function schema(db, name) {
-  var query = require('../util/fileQuery');
-
   return query(db, './schema.sql', {name: name})
     .then(R.partial(schema.table, name));
 }

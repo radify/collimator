@@ -1,28 +1,18 @@
 describe('tables', function() {
-  var tables = require('../../src/inspectors/tables');
 
-  var query;
-  var queryResult;
-  var spyOnModule = require('../spyOnModule');
+  var rewire = require('rewire');
+  var tables = rewire('../../src/inspectors/tables');
+  var mockQuery = require('../mockFileQuery');
+  tables.__set__('query', mockQuery);
 
-  beforeEach(function() {
-    var Promise = require('bluebird');
-    queryResult = Promise.defer();
-    query = spyOnModule(__dirname + '/../../src/util/fileQuery').and.returnValue(queryResult.promise);
-  });
-
-  afterEach(function() {
-    spyOnModule.removeSpy(__dirname + '/../../src/util/fileQuery');
-  });
-
-  it('queries db', function(done) {
+  it('queries db with a query read from a file', function(done) {
     tables('mockDatabase')
       .then(function(result) {
-        expect(query).toHaveBeenCalledWith('mockDatabase', './tables.sql');
+        expect(mockQuery).toHaveBeenCalledWith('mockDatabase', './tables.sql');
         expect(result).toBe('mockTables');
       })
       .then(done);
 
-      queryResult.resolve('mockTables');
+      mockQuery.deferred.resolve('mockTables');
   });
 });

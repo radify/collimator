@@ -1,19 +1,12 @@
 describe('relationships', function() {
-  var relationships = require('../../src/inspectors/relationships');
 
-  var query;
-  var spyOnModule = require('../spyOnModule');
-
-  beforeEach(function() {
-    query = spyOnModule(__dirname + '/../../src/util/fileQuery');
-  });
-
-  afterEach(function() {
-    spyOnModule.removeSpy(__dirname + '/../../src/util/fileQuery');
-  });
+  var rewire = require('rewire');
+  var relationships = rewire('../../src/inspectors/relationships');
+  var mockQuery = require('../mockFileQuery');
+  relationships.__set__('query', mockQuery);
 
   it('queries db with `name` and returns a promise', function(done) {
-    query.and.callFake(function(db, query) {
+    mockQuery.and.callFake(function(db, query) {
       var queries = {
         './relationships/belongsTo.sql': 'mockBelongsToResult',
         './relationships/has.sql':       'mockHasResult',
@@ -24,9 +17,11 @@ describe('relationships', function() {
 
     relationships('mockDatabase', 'tableName')
       .then(function(result) {
-        expect(query.calls.count()).toBe(2);
-        expect(query).toHaveBeenCalledWith('mockDatabase', './relationships/belongsTo.sql', {name: 'tableName'});
-        expect(query).toHaveBeenCalledWith('mockDatabase', './relationships/has.sql', {name: 'tableName'});
+        expect(mockQuery.calls.count()).toBe(2);
+        expect(mockQuery)
+          .toHaveBeenCalledWith('mockDatabase', './relationships/belongsTo.sql', {name: 'tableName'});
+        expect(mockQuery)
+          .toHaveBeenCalledWith('mockDatabase', './relationships/has.sql', {name: 'tableName'});
 
         expect(result).toEqual({
           belongsTo: 'mockBelongsToResult',

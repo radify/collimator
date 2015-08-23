@@ -1,12 +1,11 @@
 describe('fileQuery', function() {
-  var fileQuery = require('../../src/util/fileQuery');
   var db;
+  var fileQuery = require('../../src/util/fileQuery');
+  global.queryResult = {
+    manyOrNone: 'mockManyOrNoneQueryResult'
+  };
 
   beforeEach(function() {
-    queryResult = {
-      manyOrNone: 'mockManyOrNoneQueryResult'
-    };
-
     db = jasmine.createSpyObj('db', ['query']);
   });
 
