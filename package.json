@@ -20,6 +20,11 @@
     "gulp-istanbul": "~0.10.0",
     "rewire": "~2.3.4",
     "gulp-jscs": "~2.0.0",
-    "gulp-watch": "~4.3.5"
+    "gulp-watch": "~4.3.5",
+    "gulp-jsdoc": "~0.1.4",
+    "jscs-jsdoc": "~1.1.0",
+    "gulp-jshint": "~1.11.2",
+    "gulp-markdox": "warrenseymour/gulp-markdox#1ce4f61",
+    "gulp-concat": "~2.6.0"
   }
 }
