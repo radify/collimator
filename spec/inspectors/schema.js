@@ -1,5 +1,9 @@
 describe('schema', function() {
-  var schema = require('../../src/inspectors/schema');
+
+  var rewire = require('rewire');
+  var schema = rewire('../../src/inspectors/schema');
+  var mockQuery = require('../mockFileQuery');
+  schema.__set__('query', mockQuery);
 
   var columns = [
     {name: 'forename', nullable: false, default: null, type: 'character varying'},
@@ -9,32 +13,18 @@ describe('schema', function() {
   ];
 
   describe('schema()', function() {
-    var query;
-    var queryResult;
-    var spyOnModule = require('../spyOnModule');
-
-    beforeEach(function() {
-      var Promise = require('bluebird');
-      queryResult = Promise.defer();
-      query = spyOnModule(__dirname + '/../../src/util/fileQuery').and.returnValue(queryResult.promise);
-    });
-
-    afterEach(function() {
-      spyOnModule.removeSpy(__dirname + '/../../src/util/fileQuery');
-    });
-
     it('queries db with `name`, passes result to .table(), and returns a promise', function(done) {
       spyOn(schema, 'table').and.returnValue('mockSchema');
 
       schema('mockDatabase', 'tableName')
         .then(function(result) {
-          expect(query).toHaveBeenCalledWith('mockDatabase', './schema.sql', {name: 'tableName'});
+          expect(mockQuery).toHaveBeenCalledWith('mockDatabase', './schema.sql', {name: 'tableName'});
           expect(schema.table).toHaveBeenCalledWith('tableName', columns);
           expect(result).toBe('mockSchema');
         })
         .then(done);
 
-      queryResult.resolve(columns);
+      mockQuery.deferred.resolve(columns);
     });
   });
 

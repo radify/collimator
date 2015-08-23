@@ -1,4 +1,7 @@
 'use strict';
+
+var query = require('../util/fileQuery');
+
 /**
  * Inspects the tables defined in a database, and returns a promise that will
  * resolve to information about those tables.
@@ -10,11 +13,10 @@
  *
  * @function collimator.tables
  * @param {Promise.<Database>} db - The pg-promise connection
- * @returns {Promise.<Object[]>} A promise that will resolve to table
+ * @returns {Promise.<Array<Object>>} A promise that will resolve to table
  * information for the given database
  */
 function tables(db) {
-  var query = require('../util/fileQuery');
   return query(db, './tables.sql');
 }
 
