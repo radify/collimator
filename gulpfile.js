@@ -27,7 +27,7 @@ gulp.task('coverage', function() {
         gulp.src(spec)
           .pipe(jasmine())
           .pipe(istanbul.writeReports({
-            dir: './dist/coverage',
+            dir: './build/coverage',
             reporters: ['html', 'text']
           }));
       });
