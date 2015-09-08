@@ -10,6 +10,7 @@ var query = require('../util/fileQuery');
  * following properties:
  *
  * `name` - The name of the enumerated table
+ * `primaryKey` - The name of the column containing the primary key
  *
  * @function collimator.tables
  * @param {Promise.<Database>} db - The pg-promise connection
