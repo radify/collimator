@@ -125,6 +125,7 @@ This table information consists of an array of objects. Each element has the
 following properties:
 
 `name` - The name of the enumerated table
+`primaryKey` - The name of the column containing the primary key
 
 ### Params:
 
