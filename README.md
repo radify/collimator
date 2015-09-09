@@ -1,4 +1,4 @@
-[![Build Status](https://magnum.travis-ci.com/radify/collimator.svg?token=3HSekyeuSZHozsotHxz2&branch=master)](https://magnum.travis-ci.com/radify/collimator)
+[![Build Status](https://travis-ci.org/radify/collimator.svg)](https://travis-ci.org/radify/collimator)
 
 # Collimator
 
