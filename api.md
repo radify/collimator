@@ -2,6 +2,30 @@
 
 <!-- Start src/collimator.js -->
 
+## collimator(db)
+
+Inspect all enumerable table in a database, and return a promise that will
+resolve to information about each table.
+
+The resolved value will be an array of objects, each containing the
+following properties:
+
+- `name` - The name of the enumerated table
+- `primaryKeys` - An array of column names containing primary keys
+- `schema` - A JSON Schema v4 document that can be used to validated objects
+  that are candidates for insertion into this table
+- `relationships` - Relationship information, determined by foreign key
+  contraints. See `collimator.relationships` for further information on the
+  structure of this data.
+
+### Params:
+
+* **Promise.\<Database>** *db* - The pg-promise connection
+
+### Return:
+
+* **Promise.\<Object>** A promise that will resolve to the information for each table
+
 <!-- End src/collimator.js -->
 
 
