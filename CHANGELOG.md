@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.0 - 2015-09-10
+* Fully inspect database by default when invoking `collimator` directly
+
 ## 2.0.0 - 2015-09-09
 * Aggregate primary keys into an array
 
