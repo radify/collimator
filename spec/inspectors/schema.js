@@ -1,7 +1,7 @@
 import schema        from '../../src/inspectors/schema';
-import mockFileQuery from '../mockFileQuery';
+import MockFileQuery from '../MockFileQuery';
 
-schema.__Rewire__('query', mockFileQuery);
+import { table, property, properties, required } from '../../src/inspectors/schema';
 
 describe('schema', () => {
   const columns = [
@@ -13,29 +13,35 @@ describe('schema', () => {
 
   describe('schema()', () => {
     it('queries db with `name`, passes result to .table(), and returns a promise', (done) => {
-      spyOn(schema, 'table').and.returnValue('mockSchema');
+      var query = new MockFileQuery();
+      var table = jasmine.createSpy('table').and.returnValue('mockSchema');
+      schema.__Rewire__('query', query);
+      schema.__Rewire__('table', table);
 
       schema('mockDatabase', 'tableName')
         .then((result) => {
-          expect(mockFileQuery).toHaveBeenCalledWith('mockDatabase', './schema.sql', {name: 'tableName'});
-          expect(schema.table).toHaveBeenCalledWith('tableName', columns);
+          expect(query).toHaveBeenCalledWith('mockDatabase', './schema.sql', {name: 'tableName'});
+          expect(table).toHaveBeenCalledWith('tableName', columns);
           expect(result).toBe('mockSchema');
         })
         .then(done);
 
-      mockFileQuery.deferred.resolve(columns);
+      query.deferred.resolve(columns);
     });
   });
 
   describe('.table()', () => {
     it('returns a JSON Schema object', () => {
-      spyOn(schema, 'properties').and.returnValue('mockPropertyObject');
-      spyOn(schema, 'required').and.returnValue('mockRequiredArray');
+      var properties = jasmine.createSpy('properties').and.returnValue('mockPropertyObject');
+      var required   = jasmine.createSpy('required').and.returnValue('mockRequiredArray');
 
-      var result = schema.table('myTable', columns);
+      schema.__Rewire__('properties', properties);
+      schema.__Rewire__('required',   required);
 
-      expect(schema.properties).toHaveBeenCalledWith(columns);
-      expect(schema.required).toHaveBeenCalledWith(columns);
+      var result = table('myTable', columns);
+
+      expect(properties).toHaveBeenCalledWith(columns);
+      expect(required).toHaveBeenCalledWith(columns);
 
       expect(result).toEqual({
         $schema:    'http://json-schema.org/draft-04/schema#',
@@ -49,14 +55,16 @@ describe('schema', () => {
 
   describe('.properties()', () => {
     it('returns an object representing schema for all columns', () => {
-      spyOn(schema, 'property').and.callFake(column => ({
+      var property = jasmine.createSpy('property').and.callFake(column => ({
         [column.name]: 'mockSchemaObject'
       }));
 
-      var result = schema.properties(columns);
+      schema.__Rewire__('property', property);
+
+      var result = properties(columns);
 
       columns.forEach((column) => {
-        expect(schema.property).toHaveBeenCalledWith(column);
+        expect(property).toHaveBeenCalledWith(column);
         expect(result[column.name]).toBe('mockSchemaObject');
       });
     });
@@ -64,7 +72,7 @@ describe('schema', () => {
 
   describe('.property()', () => {
     it('returns type, keyed by column name', () => {
-      var result = schema.property(columns[0]);
+      var result = property(columns[0]);
       
       expect(result).toEqual({
         forename: {
@@ -76,8 +84,8 @@ describe('schema', () => {
 
   describe('.required()', () => {
     it('returns array of columns that are not nullable and do not have a default', () => {
-      var required = schema.required(columns);
-      expect(required).toEqual(['forename', 'surname']);
+      var result = required(columns);
+      expect(result).toEqual(['forename', 'surname']);
     });
   });
 });

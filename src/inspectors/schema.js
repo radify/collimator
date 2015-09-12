@@ -1,7 +1,5 @@
-'use strict';
-
-var R = require('ramda');
-var query = require('../util/fileQuery');
+import query from '../util/fileQuery';
+import {map, mergeAll, filter, pluck} from 'ramda';
 
 /**
  * Inspects the column definitions for a table specified by `name`, and returns
@@ -16,7 +14,7 @@ var query = require('../util/fileQuery');
  */
 function schema(db, name) {
   return query(db, './schema.sql', {name: name})
-    .then(R.partial(schema.table, name));
+    .then(columns => table(name, columns));
 }
 
 /**
@@ -32,8 +30,8 @@ function table(name, columns) {
     $schema:    'http://json-schema.org/draft-04/schema#',
     title:      name,
     type:       'object',
-    properties: schema.properties(columns),
-    required:   schema.required(columns)
+    properties: properties(columns),
+    required:   required(columns)
   };
 }
 
@@ -46,8 +44,8 @@ function table(name, columns) {
  * @returns {Object} The generated JSON Schema properties object, keyed by column name
  */
 function properties(columns) {
-  var columnProperties = R.map(schema.property, columns);
-  return R.mergeAll(columnProperties);
+  var columnProperties = map(property, columns);
+  return mergeAll(columnProperties);
 }
 
 /**
@@ -58,7 +56,7 @@ function properties(columns) {
  * @returns {Object} The generated JSON Schema property object
  */
 function property(column) {
-  var TYPES = {
+  const TYPES = {
     bigserial: 'integer',
     boolean: 'boolean',
     'character varying': 'string',
@@ -79,11 +77,11 @@ function property(column) {
     'timestamp without time zone': 'string'
   };
 
-  var schema = {
-    type: TYPES[column.type]
+  return {
+    [column.name]: {
+      type: TYPES[column.type]
+    }
   };
-
-  return R.createMapEntry(column.name, schema);
 }
 
 /**
@@ -95,17 +93,12 @@ function property(column) {
  * @returns {String[]} Names of required columns
  */
 function required(columns) {
-  var isRequired = function(column) {
-    return column.nullable === false && column.default === null;
-  };
+  const isRequired = column =>
+    column.nullable === false && column.default === null;
 
-  var requiredColumns = R.filter(isRequired, columns);
-  return R.pluck('name', requiredColumns);
+  var requiredColumns = filter(isRequired, columns);
+  return pluck('name', requiredColumns);
 }
 
-schema.table      = table;
-schema.property   = property;
-schema.required   = required;
-schema.properties = properties;
-
-module.exports = schema;
+export default schema;
+export {table, property, properties, required};

@@ -1,6 +1,4 @@
-'use strict';
-
-var query = require('../util/fileQuery');
+import query from '../util/fileQuery';
 
 /**
  * Inspects the tables defined in a database, and returns a promise that will
@@ -21,4 +19,4 @@ function tables(db) {
   return query(db, './tables.sql');
 }
 
-module.exports = tables;
+export default tables;

@@ -1,7 +1,5 @@
-'use strict';
-
-var bluebird = require('bluebird');
-var query = require('../util/fileQuery');
+import bluebird from 'bluebird';
+import query    from '../util/fileQuery';
 
 /**
  * Inspects the foreign key constraints definted in the table specified by
@@ -26,11 +24,11 @@ var query = require('../util/fileQuery');
  */
 function relationships(db, name) {
   var queries = {
-    belongsTo: query(db, './relationships/belongsTo.sql', {name: name}),
-    has:       query(db, './relationships/has.sql', {name: name})
+    belongsTo: query(db, './relationships/belongsTo.sql', {name}),
+    has:       query(db, './relationships/has.sql', {name})
   };
 
   return bluebird.props(queries);
 }
 
-module.exports = relationships;
+export default relationships;
