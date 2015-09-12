@@ -1,7 +1,9 @@
-'use strict';
+import bluebird from 'bluebird';
+import {merge}  from 'ramda';
 
-var bluebird = require('bluebird');
-var R        = require('ramda');
+import tables        from './inspectors/tables';
+import schema        from './inspectors/schema';
+import relationships from './inspectors/relationships';
 
 /**
  * Inspect all enumerable table in a database, and return a promise that will
@@ -23,17 +25,13 @@ var R        = require('ramda');
  * @returns {Promise.<Object>} A promise that will resolve to the information for each table
  */
 function collimator(db) {
-  return collimator.tables(db)
-    .map(function(table) {
-      return bluebird.props(R.merge(table, {
-        schema:        collimator.schema(db, table.name),
-        relationships: collimator.relationships(db, table.name)
-      }));
-    });
+  const inspect = table => bluebird.props(merge(table, {
+    schema:        schema(db, table.name),
+    relationships: relationships(db, table.name)
+  }));
+
+  return tables(db).map(inspect);
 }
 
-collimator.tables        = require('./inspectors/tables');
-collimator.schema        = require('./inspectors/schema');
-collimator.relationships = require('./inspectors/relationships');
-
-module.exports = collimator;
+export {tables, schema, relationships};
+export default collimator;

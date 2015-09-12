@@ -1,35 +1,34 @@
-describe('schema', function() {
+import schema        from '../../src/inspectors/schema';
+import mockFileQuery from '../mockFileQuery';
 
-  var rewire = require('rewire');
-  var schema = rewire('../../src/inspectors/schema');
-  var mockQuery = require('../mockFileQuery');
-  schema.__set__('query', mockQuery);
+schema.__Rewire__('query', mockFileQuery);
 
-  var columns = [
+describe('schema', () => {
+  const columns = [
     {name: 'forename', nullable: false, default: null, type: 'character varying'},
     {name: 'surname',  nullable: false, default: null, type: 'character varying'},
     {name: 'age',      nullable: false, default: 30,   type: 'smallint'},
     {name: 'gender',   nullable: true,  default: null, type: 'character'}
   ];
 
-  describe('schema()', function() {
-    it('queries db with `name`, passes result to .table(), and returns a promise', function(done) {
+  describe('schema()', () => {
+    it('queries db with `name`, passes result to .table(), and returns a promise', (done) => {
       spyOn(schema, 'table').and.returnValue('mockSchema');
 
       schema('mockDatabase', 'tableName')
-        .then(function(result) {
-          expect(mockQuery).toHaveBeenCalledWith('mockDatabase', './schema.sql', {name: 'tableName'});
+        .then((result) => {
+          expect(mockFileQuery).toHaveBeenCalledWith('mockDatabase', './schema.sql', {name: 'tableName'});
           expect(schema.table).toHaveBeenCalledWith('tableName', columns);
           expect(result).toBe('mockSchema');
         })
         .then(done);
 
-      mockQuery.deferred.resolve(columns);
+      mockFileQuery.deferred.resolve(columns);
     });
   });
 
-  describe('.table()', function() {
-    it('returns a JSON Schema object', function() {
+  describe('.table()', () => {
+    it('returns a JSON Schema object', () => {
       spyOn(schema, 'properties').and.returnValue('mockPropertyObject');
       spyOn(schema, 'required').and.returnValue('mockRequiredArray');
 
@@ -48,25 +47,23 @@ describe('schema', function() {
     });
   });
 
-  describe('.properties()', function() {
-    it('returns an object representing schema for all columns', function() {
-      var R = require('ramda');
-
-      spyOn(schema, 'property').and.callFake(function(column) {
-        return R.createMapEntry(column.name, 'mockSchemaObject');
-      });
+  describe('.properties()', () => {
+    it('returns an object representing schema for all columns', () => {
+      spyOn(schema, 'property').and.callFake(column => ({
+        [column.name]: 'mockSchemaObject'
+      }));
 
       var result = schema.properties(columns);
 
-      columns.forEach(function(column) {
+      columns.forEach((column) => {
         expect(schema.property).toHaveBeenCalledWith(column);
         expect(result[column.name]).toBe('mockSchemaObject');
       });
     });
   });
 
-  describe('.property()', function() {
-    it('returns type, keyed by column name', function() {
+  describe('.property()', () => {
+    it('returns type, keyed by column name', () => {
       var result = schema.property(columns[0]);
       
       expect(result).toEqual({
@@ -77,8 +74,8 @@ describe('schema', function() {
     });
   });
 
-  describe('.required()', function() {
-    it('returns array of columns that are not nullable and do not have a default', function() {
+  describe('.required()', () => {
+    it('returns array of columns that are not nullable and do not have a default', () => {
       var required = schema.required(columns);
       expect(required).toEqual(['forename', 'surname']);
     });
