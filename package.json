@@ -2,7 +2,7 @@
   "name": "collimator",
   "version": "2.1.0",
   "description": "Reflection & Introspection for PostgreSQL Databases",
-  "main": "src/collimator.js",
+  "main": "lib/collimator.js",
   "scripts": {
     "test": "gulp"
   },
@@ -30,15 +30,33 @@
     "gulp-markdox": "warrenseymour/gulp-markdox#1ce4f61",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.4.1",
+    "isparta": "^3.0.4",
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.2",
     "yargs": "^3.24.0"
   },
   "build": {
-    "name": "collimator"
+    "tasks": "gulp-tasks",
+
+    "paths": {
+      "src": "src/**/*.js",
+      "sql": "src/**/*.sql",
+      "spec": "spec/**/*.js",
+      "coverage": "coverage",
+      "dist": "lib"
+    },
+
+    "watch": {
+      "paths": ["src/**/*.js", "spec/**/*.js"],
+      "tasks": ["test", "style", "docs"]
+    }
   },
   "babel": {
     "env": {
       "test": {
-        "plugins": ["rewire"]
+        "plugins": [
+          "rewire"
+        ]
       }
     }
   }

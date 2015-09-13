@@ -12,7 +12,7 @@ function fileQuery(db, file, params, resultMask) {
   resultMask = resultMask || global.queryResult.manyOrNone;
 
   return readFileP(path, 'utf-8')
-    .then((query) => db.query(query, params, resultMask));
+    .then(query => db.query(query, params, resultMask));
 }
 
 function resolvePath(file) {
