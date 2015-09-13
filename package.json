@@ -1,6 +1,6 @@
 {
   "name": "collimator",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "Reflection & Introspection for PostgreSQL Databases",
   "main": "lib/collimator.js",
   "scripts": {
