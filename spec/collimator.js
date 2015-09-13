@@ -1,27 +1,29 @@
-describe('collimator', function() {
-  var collimator = require('../src/collimator');
-  var bluebird   = require('bluebird');
+import collimator from '../src/collimator';
+import bluebird   from 'bluebird';
 
-  it('exports inspectors', function() {
-    expect(collimator.tables).toBe(require('../src/inspectors/tables'));
-    expect(collimator.schema).toBe(require('../src/inspectors/schema'));
-    expect(collimator.relationships).toBe(require('../src/inspectors/relationships'));
-  });
+describe('collimator', () => {
+  it('describes the entire database when invoked directly', (done) => {
+    var deferred = {
+      tables:        bluebird.defer(),
+      schema:        bluebird.defer(),
+      relationships: bluebird.defer()
+    };
 
-  it('describes the entire database when invoked directly', function(done) {
-    var tables        = bluebird.defer();
-    var schema        = bluebird.defer();
-    var relationships = bluebird.defer();
+    var spy = {
+      tables:        jasmine.createSpy('tables').and.returnValue(deferred.tables.promise),
+      schema:        jasmine.createSpy('schema').and.returnValue(deferred.schema.promise),
+      relationships: jasmine.createSpy('relationships').and.returnValue(deferred.relationships.promise)
+    };
 
-    spyOn(collimator, 'tables').and.returnValue(tables.promise);
-    spyOn(collimator, 'schema').and.returnValue(schema.promise);
-    spyOn(collimator, 'relationships').and.returnValue(relationships.promise);
+    collimator.__Rewire__('tables', spy.tables);
+    collimator.__Rewire__('schema', spy.schema);
+    collimator.__Rewire__('relationships', spy.relationships);
 
     collimator('mockDb')
-      .then(function(result) {
-        expect(collimator.tables).toHaveBeenCalledWith('mockDb');
-        expect(collimator.schema).toHaveBeenCalledWith('mockDb', 'mockTable');
-        expect(collimator.relationships).toHaveBeenCalledWith('mockDb', 'mockTable');
+      .then((result) => {
+        expect(spy.tables).toHaveBeenCalledWith('mockDb');
+        expect(spy.schema).toHaveBeenCalledWith('mockDb', 'mockTable');
+        expect(spy.relationships).toHaveBeenCalledWith('mockDb', 'mockTable');
 
         expect(result).toEqual([
           { name: 'mockTable', schema: 'mockSchema', relationships: 'mockRelationships' }
@@ -29,8 +31,8 @@ describe('collimator', function() {
       })
       .then(done);
 
-    tables.resolve([{name: 'mockTable'}]);
-    schema.resolve('mockSchema');
-    relationships.resolve('mockRelationships');
+    deferred.tables.resolve([{name: 'mockTable'}]);
+    deferred.schema.resolve('mockSchema');
+    deferred.relationships.resolve('mockRelationships');
   });
 });

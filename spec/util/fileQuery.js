@@ -1,33 +1,35 @@
-describe('fileQuery', function() {
+import fileQuery from '../../src/util/fileQuery';
+
+describe('fileQuery', () => {
   var db;
-  var fileQuery = require('../../src/util/fileQuery');
+
   global.queryResult = {
     manyOrNone: 'mockManyOrNoneQueryResult'
   };
 
-  beforeEach(function() {
+  beforeEach(() => {
     db = jasmine.createSpyObj('db', ['query']);
   });
 
-  it('runs a query from a file', function(done) {
+  it('runs a query from a file', (done) => {
     fileQuery(db, './testQuery.sql')
-      .then(function(result) {
+      .then((result) => {
         expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', undefined, queryResult.manyOrNone);
       })
       .then(done);
   });
 
-  it('specifies params', function(done) {
+  it('specifies params', (done) => {
     fileQuery(db, './testQuery.sql', 'mockParams')
-      .then(function(result) {
+      .then((result) => {
         expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', 'mockParams', queryResult.manyOrNone);
       })
       .then(done);
   });
 
-  it('specifies a query result mask', function(done) {
+  it('specifies a query result mask', (done) => {
     fileQuery(db, './testQuery.sql', undefined, 'mockQueryResultMask')
-      .then(function(result) {
+      .then((result) => {
         expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', undefined, 'mockQueryResultMask');
       })
       .then(done);

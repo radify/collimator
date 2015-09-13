@@ -1,18 +1,18 @@
-describe('tables', function() {
+import tables        from '../../src/inspectors/tables';
+import MockFileQuery from '../MockFileQuery';
 
-  var rewire = require('rewire');
-  var tables = rewire('../../src/inspectors/tables');
-  var mockQuery = require('../mockFileQuery');
-  tables.__set__('query', mockQuery);
+describe('tables', () => {
+  it('queries db with a query read from a file', (done) => {
+    var query = new MockFileQuery();
+    tables.__Rewire__('query', query);
 
-  it('queries db with a query read from a file', function(done) {
     tables('mockDatabase')
-      .then(function(result) {
-        expect(mockQuery).toHaveBeenCalledWith('mockDatabase', './tables.sql');
+      .then((result) => {
+        expect(query).toHaveBeenCalledWith('mockDatabase', './tables.sql');
         expect(result).toBe('mockTables');
       })
       .then(done);
 
-      mockQuery.deferred.resolve('mockTables');
+      query.deferred.resolve('mockTables');
   });
 });

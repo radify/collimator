@@ -2,7 +2,7 @@
   "name": "collimator",
   "version": "2.1.0",
   "description": "Reflection & Introspection for PostgreSQL Databases",
-  "main": "src/collimator.js",
+  "main": "lib/collimator.js",
   "scripts": {
     "test": "gulp"
   },
@@ -15,13 +15,49 @@
   },
   "repository": "git+https://github.com/radify/collimator",
   "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.24",
+    "babel-plugin-rewire": "^0.1.22",
     "gulp": "~3.9.0",
-    "gulp-jasmine": "~2.0.1",
+    "gulp-babel": "^5.2.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-env": "^0.2.0",
+    "gulp-if": "^1.2.5",
     "gulp-istanbul": "~0.10.0",
-    "rewire": "~2.3.4",
+    "gulp-jasmine": "^2.0.1",
     "gulp-jscs": "~2.0.0",
     "gulp-jshint": "~1.11.2",
     "gulp-markdox": "warrenseymour/gulp-markdox#1ce4f61",
-    "gulp-concat": "~2.6.0"
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.1",
+    "isparta": "^3.0.4",
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.2",
+    "yargs": "^3.24.0"
+  },
+  "build": {
+    "tasks": "gulp-tasks",
+
+    "paths": {
+      "src": "src/**/*.js",
+      "sql": "src/**/*.sql",
+      "spec": "spec/**/*.js",
+      "coverage": "coverage",
+      "dist": "lib"
+    },
+
+    "watch": {
+      "paths": ["src/**/*.js", "spec/**/*.js"],
+      "tasks": ["test", "style", "docs"]
+    }
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "rewire"
+        ]
+      }
+    }
   }
 }

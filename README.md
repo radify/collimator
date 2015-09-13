@@ -54,13 +54,13 @@ Install dependencies with:
 npm install
 ```
 
-Run the tests with:
+Run the tests and build with:
 
 ```bash
 gulp
 ```
 
-Run unit test coverage with:
+Generate unit test coverage with:
 
 ```bash
 gulp coverage
@@ -75,7 +75,7 @@ gulp docs
 Enter development mode with:
 
 ```bash
-gulp dev
+gulp watch
 ```
 
 This will watch the `src` and `spec` directories and run `gulp` automatically when a change is detected. Note that it will not run the tests until it detects a change, so you may prefer to run it with `gulp & gulp dev`.

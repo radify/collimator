@@ -2,5 +2,10 @@
   "preset": "google",
   "jsDoc": {
     "checkAnnotations": "jsdoc3"
-  }
+  },
+  "esnext": true,
+  "disallowParenthesesAroundArrowParam": true,
+  "requireArrowFunctions": true,
+  "requireShorthandArrowFunctions": true,
+  "requireTemplateStrings": true
 }

@@ -1,13 +1,13 @@
-describe('relationships', function() {
+import relationships from '../../src/inspectors/relationships';
+import MockFileQuery from '../MockFileQuery';
 
-  var rewire = require('rewire');
-  var relationships = rewire('../../src/inspectors/relationships');
-  var mockQuery = require('../mockFileQuery');
-  relationships.__set__('query', mockQuery);
+describe('relationships', () => {
+  it('queries db with `name` and returns a promise', (done) => {
+    var query = new MockFileQuery();
+    relationships.__Rewire__('query', query);
 
-  it('queries db with `name` and returns a promise', function(done) {
-    mockQuery.and.callFake(function(db, query) {
-      var queries = {
+    query.and.callFake((db, query) => {
+      const queries = {
         './relationships/belongsTo.sql': 'mockBelongsToResult',
         './relationships/has.sql':       'mockHasResult',
       };
@@ -16,11 +16,11 @@ describe('relationships', function() {
     });
 
     relationships('mockDatabase', 'tableName')
-      .then(function(result) {
-        expect(mockQuery.calls.count()).toBe(2);
-        expect(mockQuery)
+      .then((result) => {
+        expect(query.calls.count()).toBe(2);
+        expect(query)
           .toHaveBeenCalledWith('mockDatabase', './relationships/belongsTo.sql', {name: 'tableName'});
-        expect(mockQuery)
+        expect(query)
           .toHaveBeenCalledWith('mockDatabase', './relationships/has.sql', {name: 'tableName'});
 
         expect(result).toEqual({
