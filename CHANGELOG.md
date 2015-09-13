@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 - 2015-09-13
+* Migrate to ES6
+* Add Node 4 to build matrix
+
 ## 2.0.0 - 2015-09-10
 * Fully inspect database by default when invoking `collimator` directly
 
