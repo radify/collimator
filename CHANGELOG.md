@@ -2,6 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.1.0 - 2015-11-07
+* Implement 'readonly' column schema property
+
 ## 3.0.0 - 2015-09-13
 * Migrate to ES6
 * Add Node 4 to build matrix
