@@ -7,7 +7,7 @@ import callsite    from 'callsite';
 
 const readFileP = promisify(readFile);
 
-function fileQuery(db, file, params, resultMask) {
+export default function fileQuery(db, file, params, resultMask) {
   var path = resolvePath(file);
   resultMask = resultMask || global.queryResult.manyOrNone;
 
@@ -20,5 +20,3 @@ function resolvePath(file) {
   var caller = stack[2];
   return resolve(caller.getFileName(), '..', file);
 }
-
-export default fileQuery;

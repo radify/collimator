@@ -22,7 +22,7 @@ import query    from '../util/fileQuery';
  * @param {String} name - The name of the table to get the relationship definitions for
  * @returns {Promise.<Object>} A promise that will resolve to the relationship definitions for the given table
  */
-function relationships(db, name) {
+export default function relationships(db, name) {
   var queries = {
     belongsTo: query(db, './relationships/belongsTo.sql', {name}),
     has:       query(db, './relationships/has.sql', {name})
@@ -30,5 +30,3 @@ function relationships(db, name) {
 
   return bluebird.props(queries);
 }
-
-export default relationships;

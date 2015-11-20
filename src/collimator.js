@@ -24,7 +24,7 @@ import relationships from './inspectors/relationships';
  * @param {Promise.<Database>} db - The pg-promise connection
  * @returns {Promise.<Object>} A promise that will resolve to the information for each table
  */
-function collimator(db) {
+export default function collimator(db) {
   const inspect = table => bluebird.props(merge(table, {
     schema:        schema(db, table.name),
     relationships: relationships(db, table.name)
@@ -34,4 +34,3 @@ function collimator(db) {
 }
 
 export {tables, schema, relationships};
-export default collimator;
