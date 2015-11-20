@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.0 - 2015-11-20
+* Use inline form of `export` syntax
+* Swap `belongsTo` and `has` queries as they were incorrect
+* Revert 'Implement 'readonly' column schema property'
+
 ## 3.1.0 - 2015-11-07
 * Implement 'readonly' column schema property
 
