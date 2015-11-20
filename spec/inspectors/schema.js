@@ -8,8 +8,7 @@ describe('schema', () => {
     {name: 'forename', nullable: false, default: null, type: 'character varying'},
     {name: 'surname',  nullable: false, default: null, type: 'character varying'},
     {name: 'age',      nullable: false, default: 30,   type: 'smallint'},
-    {name: 'gender',   nullable: true,  default: null, type: 'character'},
-    {name: 'created',  nullable: false, default: 'now()', type: 'timestamp without time zone'}
+    {name: 'gender',   nullable: true,  default: null, type: 'character'}
   ];
 
   describe('schema()', () => {
@@ -74,21 +73,10 @@ describe('schema', () => {
   describe('.property()', () => {
     it('returns type, keyed by column name', () => {
       var result = property(columns[0]);
-
+      
       expect(result).toEqual({
         forename: {
           type: 'string'
-        }
-      });
-    });
-
-    it('sets `readonly` to `true` when default value contains an expression', () => {
-      var result = property(columns[4]);
-
-      expect(result).toEqual({
-        created: {
-          type: 'string',
-          readonly: true
         }
       });
     });
