@@ -12,7 +12,7 @@ import {map, mergeAll, filter, pluck} from 'ramda';
  * @param {String} name - The name of the table to get the schema of
  * @returns {Promise.<Object>} A promise that will resolve to the schema for the given table
  */
-function schema(db, name) {
+export default function schema(db, name) {
   return query(db, './schema.sql', {name: name})
     .then(columns => table(name, columns));
 }
@@ -25,7 +25,7 @@ function schema(db, name) {
  * @param {Object[]} columns - The columns being documented
  * @returns {Object} The generated JSON Schema document
  */
-function table(name, columns) {
+export function table(name, columns) {
   return {
     $schema:    'http://json-schema.org/draft-04/schema#',
     title:      name,
@@ -43,7 +43,7 @@ function table(name, columns) {
  * @param {Object[]} columns - The columns to document
  * @returns {Object} The generated JSON Schema properties object, keyed by column name
  */
-function properties(columns) {
+export function properties(columns) {
   var columnProperties = map(property, columns);
   return mergeAll(columnProperties);
 }
@@ -55,7 +55,7 @@ function properties(columns) {
  * @param {Object} column - The column to document
  * @returns {Object} The generated JSON Schema property object
  */
-function property(column) {
+export function property(column) {
   const TYPES = {
     bigserial: 'integer',
     boolean: 'boolean',
@@ -92,13 +92,10 @@ function property(column) {
  * @param {Object[]} columns - The columns to document
  * @returns {String[]} Names of required columns
  */
-function required(columns) {
+export function required(columns) {
   const isRequired = column =>
     column.nullable === false && column.default === null;
 
   var requiredColumns = filter(isRequired, columns);
   return pluck('name', requiredColumns);
 }
-
-export default schema;
-export {table, property, properties, required};

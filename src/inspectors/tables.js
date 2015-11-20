@@ -15,8 +15,6 @@ import query from '../util/fileQuery';
  * @returns {Promise.<Array<Object>>} A promise that will resolve to table
  * information for the given database
  */
-function tables(db) {
+export default function tables(db) {
   return query(db, './tables.sql');
 }
-
-export default tables;
