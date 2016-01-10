@@ -9,7 +9,6 @@ const readFileP = promisify(readFile);
 
 export default function fileQuery(db, file, params, resultMask) {
   var path = resolvePath(file);
-  resultMask = resultMask || global.queryResult.manyOrNone;
 
   return readFileP(path, 'utf-8')
     .then(query => db.query(query, params, resultMask));

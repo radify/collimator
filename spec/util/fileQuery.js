@@ -3,10 +3,6 @@ import fileQuery from '../../src/util/fileQuery';
 describe('fileQuery', () => {
   var db;
 
-  global.queryResult = {
-    manyOrNone: 'mockManyOrNoneQueryResult'
-  };
-
   beforeEach(() => {
     db = jasmine.createSpyObj('db', ['query']);
   });
@@ -14,7 +10,7 @@ describe('fileQuery', () => {
   it('runs a query from a file', (done) => {
     fileQuery(db, './testQuery.sql')
       .then((result) => {
-        expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', undefined, queryResult.manyOrNone);
+        expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', undefined, undefined);
       })
       .then(done);
   });
@@ -22,7 +18,7 @@ describe('fileQuery', () => {
   it('specifies params', (done) => {
     fileQuery(db, './testQuery.sql', 'mockParams')
       .then((result) => {
-        expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', 'mockParams', queryResult.manyOrNone);
+        expect(db.query).toHaveBeenCalledWith('SELECT * FROM test_query;\n', 'mockParams', undefined);
       })
       .then(done);
   });
