@@ -28,9 +28,6 @@ following properties:
 
 <!-- End src/collimator.js -->
 
-
-
-
 <!-- Start src/inspectors/relationships.js -->
 
 ## collimator.relationships(db, name)
@@ -60,9 +57,6 @@ element is an object with the following properties:
 * **Promise.\<Object>** A promise that will resolve to the relationship definitions for the given table
 
 <!-- End src/inspectors/relationships.js -->
-
-
-
 
 <!-- Start src/inspectors/schema.js -->
 
@@ -135,9 +129,6 @@ nullable and do not specify a default value
 
 <!-- End src/inspectors/schema.js -->
 
-
-
-
 <!-- Start src/inspectors/tables.js -->
 
 ## collimator.tables(db)
@@ -160,9 +151,6 @@ following properties:
 * **Promise.\<Array.<Object>>** A promise that will resolve to table information for the given database
 
 <!-- End src/inspectors/tables.js -->
-
-
-
 
 <!-- Start src/util/fileQuery.js -->
 
