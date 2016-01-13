@@ -1,8 +1,10 @@
 {
   "name": "collimator",
-  "version": "0.0.0",
   "description": "Reflection & Introspection for PostgreSQL Databases",
-  "repository": "git+https://github.com/radify/collimator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/radify/collimator.git"
+  },
   "main": "lib/collimator.js",
   "author": "Radify",
   "license": "BSD-3-Clause",
@@ -19,7 +21,8 @@
     "gulp-jscs": "^3.0.2",
     "gulp-markdox2": "^1.9.94",
     "isparta": "^4.0.0",
-    "require-dir": "^0.3.0"
+    "require-dir": "^0.3.0",
+    "semantic-release": "^4.3.5"
   },
   "babel": {
     "presets": [
@@ -70,5 +73,8 @@
     "bluebird": "^3.1.1",
     "callsite": "^1.0.0",
     "ramda": "^0.19.1"
+  },
+  "scripts": {
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   }
 }
