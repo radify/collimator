@@ -1,6 +1,10 @@
-[![Build Status](https://travis-ci.org/radify/collimator.svg)](https://travis-ci.org/radify/collimator)
+<div id="badges" align="center"></div>
 
 # Collimator
+
+## Reflection & Introspection for PostgreSQL Databases
+
+### What is Collimator?
 
 Collimator is a JavaScript library that uses reflection techniques to introspect PostgreSQL databases:
 
@@ -10,23 +14,17 @@ Collimator is a JavaScript library that uses reflection techniques to introspect
 
 [jsonschema]: http://json-schema.org
 
-# Why?
+### Design Motivations
 
 Traditionally, programmers have defined their schema by writing model definitions in application code. Some kind of migration tool then transforms this schema into SQL, and applies it against a database.
 
 Collimator allows this pattern to be reversed. The database now becomes the canonical source of your application's schema and relationship metadata.
 
-# Prior Art
-
-The approach to schema extraction is inspired by [DDL.js][js-ddl]. Collimator's implementation is currently not as robust as DDL.js, and only targets PostgreSQL (an intentional design decision, and unlikely to change). However, Collimator supports the extraction of relationship information.
-
-[js-ddl]: https://github.com/moll/js-ddl
-
-# Installation
+### Installation
 
 Install as a dependency in your application with `npm install --save collimator`.
 
-# Usage
+### Usage
 
 Enumerate table names and primary keys with `collimator.tables(db)`.
 
@@ -40,42 +38,20 @@ The top-level Collimator functions (`tables`, `schema` and `relationships`) acce
 [examples]: https://github.com/radify/collimator/tree/master/examples
 [api-docs]: https://github.com/radify/collimator/blob/master/api.md
 
-# Change Log
+### Changelog
 
-Please consult the [Change Log][changelog] for detailed notes on each release.
+This project adheres to [Semantic Versioning](http://semver.org/). For a list of detailed changes, please refer to [CHANGELOG.md](CHANGELOG.md).
 
-[changelog]: https://github.com/radify/collimator/blob/master/CHANGELOG.md
+### Contributing
 
-# Development
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Install dependencies with:
+### Prior Art
 
-```bash
-npm install
-```
+The approach to schema extraction is inspired by [DDL.js][js-ddl]. Collimator's implementation is currently not as robust as DDL.js, and only targets PostgreSQL (an intentional design decision, and unlikely to change). However, Collimator supports the extraction of relationship information.
 
-Run the tests and build with:
+[js-ddl]: https://github.com/moll/js-ddl
 
-```bash
-gulp
-```
+### License
 
-Generate unit test coverage with:
-
-```bash
-gulp coverage
-```
-
-Update API documentation with:
-
-```bash
-gulp docs
-```
-
-Enter development mode with:
-
-```bash
-gulp watch
-```
-
-This will watch the `src` and `spec` directories and run `gulp` automatically when a change is detected. Note that it will not run the tests until it detects a change, so you may prefer to run it with `gulp & gulp dev`.
+collimator is released under the [BSD 3-clause “New” License](LICENSE).
