@@ -1,41 +1,80 @@
-import gulp   from 'gulp';
-import gif    from 'gulp-if';
-import smaps  from 'gulp-sourcemaps';
-import babel  from 'gulp-babel';
-import concat from 'gulp-concat';
-import uglify from 'gulp-uglify';
-import jas    from 'gulp-jasmine';
-import yargs  from 'yargs';
-import reqDir from 'require-dir';
-import config from './package.json';
+import gulp     from 'gulp';
+import babel    from 'gulp-babel';
+import del      from 'del';
+import jasmine  from 'gulp-jasmine';
+import markdox  from 'gulp-markdox2';
+import jscs     from 'gulp-jscs';
+import istanbul from 'gulp-istanbul';
+import reqDir   from 'require-dir';
 
-const args = yargs.argv;
+import {
+  build as config
+} from './package.json';
 
-const conf = (name, override) => Object.assign(({
-  test: { src:  config.build.paths.spec, pipe: jas({ includeStackTrace: true }) },
-  dist: { dest: config.build.paths.dist, smaps: true },
-  min:  { dest: config.build.paths.dist, file: `${config.name}.min.js`, min: true, smaps: false }
-})[name], override || {});
+import {
+  Instrumenter as isparta
+} from 'isparta';
 
-const pipeline = opts => [gulp.src(opts.src || config.build.paths.src)].concat(opts.pipe || [
-  gif(!!opts.smaps,   smaps.init()),
-  gif(!!opts.modules, babel({ modules: opts.modules })),
-  gif(!!opts.file,    concat(opts.file || `${config.build.name}.js`)),
-  gif(!!opts.min,     uglify()),
-  gif(!!opts.smaps,   smaps.write('.')),
-  gulp.dest(opts.dest)
-]);
-const chain = steps => steps.reduce((prev, step) => prev && prev.pipe(step) || step);
-const build = (name, opts) => chain(pipeline(conf(name, opts)));
-const bind  = (fn, ...args) => () => fn(...args);
+gulp.task('clean', () => {
+  return del([
+    config.paths.dist,
+    config.paths.coverage,
+    config.paths.docs
+  ], { force: true });
+});
 
-gulp.task('test',    bind(build, 'test'));
-gulp.task('dist',    bind(build, args.min ? 'min' : 'dist', Object.assign({ modules: 'common' }, args)));
-gulp.task('watch',   gulp.watch.bind(gulp, config.build.watch.paths, config.build.watch.tasks));
-gulp.task('default', ['test', 'dist']);
-
-if (config.build.tasks) {
-  reqDir(config.build.tasks);
+function test() {
+  return gulp.src(`${config.paths.spec}/**/*.js`)
+    .pipe(jasmine());
 }
+gulp.task(test);
 
-gulp.on('err', e => console.log("Gulp error:", e.err.stack));
+gulp.task('style', () => {
+  return gulp.src(`${config.paths.src}/**/*.js`)
+    .pipe(jscs())
+    .pipe(jscs.reporter())
+    .pipe(jscs.reporter('fail'));
+});
+
+gulp.task('docs', () => {
+  return gulp.src(`${config.paths.src}/**/*.js`)
+    .pipe(markdox({concat: 'API.md'}))
+    .pipe(gulp.dest(config.paths.docs));
+});
+
+gulp.task('compile', () => {
+  return gulp.src(`${config.paths.src}/**/*.js`)
+    .pipe(babel())
+    .pipe(gulp.dest(config.paths.dist));
+});
+
+gulp.task('build',   gulp.series('clean', 'style', 'test', 'compile', 'docs'));
+gulp.task('default', gulp.task('build'));
+
+gulp.task('watch', () => {
+  return gulp.watch([config.paths.src, config.paths.spec], gulp.task('build'));
+});
+
+const coverage = {
+  setup() {
+    return gulp.src(`${config.paths.src}/**/*.js`)
+      .pipe(istanbul({
+        instrumenter:    isparta,
+        includeUntested: true
+      }))
+      .pipe(istanbul.hookRequire());
+  },
+
+  run() {
+    return test()
+      .pipe(istanbul.writeReports({
+        reporters:  ['lcov', 'text'],
+        reportOpts: { dir: config.paths.coverage }
+      }));
+  }
+};
+gulp.task('coverage', gulp.series(coverage.setup, coverage.run));
+
+try {
+  reqDir(config.paths.build);
+} catch(err) {}
