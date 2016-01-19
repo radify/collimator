@@ -2,7 +2,7 @@
 
 <!-- Start src/collimator.js -->
 
-## collimator(db)
+## collimator.inspect(db)
 
 Inspect all enumerable table in a database, and return a promise that will
 resolve to information about each table.
