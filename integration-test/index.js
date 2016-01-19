@@ -18,8 +18,14 @@ var expected = [{
       id: {type: 'integer'},
       username: {type: 'string'},
       password: {type: 'string'},
-      created_at: {},
-      updated_at: {}
+      created_at: {
+        type: 'string',
+        format: 'date-time'
+      },
+      updated_at: {
+        type: 'string',
+        format: 'date-time'
+      },
     },
 
     required: ['username', 'password']
@@ -53,8 +59,14 @@ var expected = [{
       complete: {
         type: 'boolean'
       },
-      created_at: {},
-      updated_at: {},
+      created_at: {
+        type: 'string',
+        format: 'date-time'
+      },
+      updated_at: {
+        type: 'string',
+        format: 'date-time'
+      },
       owner: {
         type: 'integer'
       }
