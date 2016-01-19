@@ -21,7 +21,7 @@ import relationships from './inspectors/relationships';
  *   structure of this data.
  *
  * @function collimator
- * @param {Promise.<Database>} db - The pg-promise connection
+ * @param {Database} db - A pg-promise `Database` instance
  * @returns {Promise.<Object>} A promise that will resolve to the information for each table
  */
 export default function collimator(db) {

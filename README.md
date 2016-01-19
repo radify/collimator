@@ -32,11 +32,11 @@ Generate JSON Schema with `collimator.schema(db, 'tableName')`.
 
 Extract relationship information with `collimator.relationships(db, 'tableName')`.
 
-The top-level Collimator functions (`tables`, `schema` and `relationships`) accept a [pg-promise][pg-promise] connection as their first argument, and return a promise. For further guidance, please refer to the [examples][examples] and [API Documentation][api-docs].
+The top-level Collimator functions (`tables`, `schema` and `relationships`) accept a [pg-promise][pg-promise] `Database` instance as their first argument, and return a promise. For further guidance, please refer to the [examples][examples] and [API Documentation][api-docs].
 
 [pg-promise]: https://www.npmjs.com/package/pg-promise
 [examples]: https://github.com/radify/collimator/tree/master/examples
-[api-docs]: https://github.com/radify/collimator/blob/master/api.md
+[api-docs]: https://github.com/radify/collimator/blob/master/docs/API.md
 
 ### Changelog
 
