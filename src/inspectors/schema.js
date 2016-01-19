@@ -8,7 +8,7 @@ import {map, mergeAll, filter, pluck} from 'ramda';
  * insertion into table `name`.
  *
  * @function collimator.schema
- * @param {Promise.<Database>} db - The pg-promise connection
+ * @param {Database} db - A pg-promise `Database` instance
  * @param {String} name - The name of the table to get the schema of
  * @returns {Promise.<Object>} A promise that will resolve to the schema for the given table
  */

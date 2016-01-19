@@ -18,7 +18,7 @@ import query    from '../util/fileQuery';
  *          table's primary key)
  *
  * @function collimator.relationships
- * @param {Promise.<Database>} db - The pg-promise connection
+ * @param {Database} db - A pg-promise `Database` instance
  * @param {String} name - The name of the table to get the relationship definitions for
  * @returns {Promise.<Object>} A promise that will resolve to the relationship definitions for the given table
  */
