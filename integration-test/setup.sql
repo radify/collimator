@@ -7,8 +7,8 @@ CREATE TABLE tasks
   title character varying(255) NOT NULL,
   description character varying(255),
   complete boolean NOT NULL DEFAULT false,
-  created_at timestamp with time zone,
-  updated_at timestamp with time zone,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
   owner integer NOT NULL,
   PRIMARY KEY (id)
 );
@@ -18,8 +18,8 @@ CREATE TABLE users
   id serial,
   username character varying(255) NOT NULL,
   password character varying(255) NOT NULL,
-  created_at timestamp with time zone,
-  updated_at timestamp with time zone,
+  created_at timestamp with time zone DEFAULT now(),
+  updated_at timestamp with time zone DEFAULT now(),
   PRIMARY KEY (id)
 );
 

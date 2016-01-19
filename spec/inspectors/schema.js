@@ -5,10 +5,10 @@ import { table, property, properties, required } from '../../src/inspectors/sche
 
 describe('schema', () => {
   const columns = [
-    {name: 'forename', nullable: false, default: null, type: 'character varying'},
-    {name: 'surname',  nullable: false, default: null, type: 'character varying'},
-    {name: 'age',      nullable: false, default: 30,   type: 'smallint'},
-    {name: 'gender',   nullable: true,  default: null, type: 'character'}
+    {name: 'forename',   nullable: false, default: null, type: 'character varying'},
+    {name: 'surname',    nullable: false, default: null, type: 'character varying'},
+    {name: 'age',        nullable: false, default: 30,   type: 'smallint'},
+    {name: 'gender',     nullable: true,  default: null, type: 'character'}
   ];
 
   describe('schema()', () => {
@@ -77,6 +77,22 @@ describe('schema', () => {
       expect(result).toEqual({
         forename: {
           type: 'string'
+        }
+      });
+    });
+
+    it('converts timestamps to strings with `date-time` format', () => {
+      var result = property({
+        name:     'date_of_birth',
+        nullable: false,
+        default:  null,
+        type:     'time without time zone'
+      });
+
+      expect(result).toEqual({
+        date_of_birth: {
+          type:   'string',
+          format: 'date-time'
         }
       });
     });
