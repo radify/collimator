@@ -1,8 +1,8 @@
 import gulp    from 'gulp';
 import {build} from '../package.json';
 
-gulp.on('task_stop', event => {
-  if (event.task !== 'dist') {
+gulp.on('stop', e => {
+  if (e.name !== 'compile') {
     return;
   }
 

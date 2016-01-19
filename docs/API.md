@@ -2,7 +2,7 @@
 
 <!-- Start src/collimator.js -->
 
-## collimator(db)
+## collimator.inspect(db)
 
 Inspect all enumerable table in a database, and return a promise that will
 resolve to information about each table.
@@ -20,7 +20,7 @@ following properties:
 
 ### Params:
 
-* **Promise.\<Database>** *db* - The pg-promise connection
+* **Database** *db* - A pg-promise `Database` instance
 
 ### Return:
 
@@ -49,7 +49,7 @@ element is an object with the following properties:
 
 ### Params:
 
-* **Promise.\<Database>** *db* - The pg-promise connection
+* **Database** *db* - A pg-promise `Database` instance
 * **String** *name* - The name of the table to get the relationship definitions for
 
 ### Return:
@@ -69,7 +69,7 @@ insertion into table `name`.
 
 ### Params:
 
-* **Promise.\<Database>** *db* - The pg-promise connection
+* **Database** *db* - A pg-promise `Database` instance
 * **String** *name* - The name of the table to get the schema of
 
 ### Return:
@@ -144,7 +144,7 @@ following properties:
 
 ### Params:
 
-* **Promise.\<Database>** *db* - The pg-promise connection
+* **Database** *db* - A pg-promise `Database` instance
 
 ### Return:
 

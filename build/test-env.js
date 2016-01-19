@@ -7,10 +7,8 @@ function setEnv(event, set) {
 
   if (set) {
     process.env.BABEL_ENV = 'test';
-    process.env.TRACING_DISABLE = true;
   } else {
     delete process.env.BABEL_ENV;
-    delete process.env.TRACING_DISABLE;
   }
 }
 

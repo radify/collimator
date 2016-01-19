@@ -1,8 +1,8 @@
-import collimator from '../src/collimator';
-import bluebird   from 'bluebird';
+import * as collimator from '../src/collimator';
+import bluebird        from 'bluebird';
 
-describe('collimator', () => {
-  it('describes the entire database when invoked directly', (done) => {
+describe('collimator.inspect', () => {
+  it('describes the entire database', (done) => {
     var deferred = {
       tables:        bluebird.defer(),
       schema:        bluebird.defer(),
@@ -19,7 +19,7 @@ describe('collimator', () => {
     collimator.__Rewire__('schema', spy.schema);
     collimator.__Rewire__('relationships', spy.relationships);
 
-    collimator('mockDb')
+    collimator.inspect('mockDb')
       .then((result) => {
         expect(spy.tables).toHaveBeenCalledWith('mockDb');
         expect(spy.schema).toHaveBeenCalledWith('mockDb', 'mockTable');

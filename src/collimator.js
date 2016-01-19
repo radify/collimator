@@ -20,17 +20,17 @@ import relationships from './inspectors/relationships';
  *   contraints. See `collimator.relationships` for further information on the
  *   structure of this data.
  *
- * @function collimator
- * @param {Promise.<Database>} db - The pg-promise connection
+ * @function collimator.inspect
+ * @param {Database} db - A pg-promise `Database` instance
  * @returns {Promise.<Object>} A promise that will resolve to the information for each table
  */
-export default function collimator(db) {
-  const inspect = table => bluebird.props(merge(table, {
+export function inspect(db) {
+  const inspectors = table => bluebird.props(merge(table, {
     schema:        schema(db, table.name),
     relationships: relationships(db, table.name)
   }));
 
-  return tables(db).map(inspect);
+  return tables(db).map(inspectors);
 }
 
 export {tables, schema, relationships};

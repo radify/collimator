@@ -11,7 +11,7 @@ import query from '../util/fileQuery';
  * `primaryKeys` - An array of column names that are primary keys
  *
  * @function collimator.tables
- * @param {Promise.<Database>} db - The pg-promise connection
+ * @param {Database} db - A pg-promise `Database` instance
  * @returns {Promise.<Array<Object>>} A promise that will resolve to table
  * information for the given database
  */

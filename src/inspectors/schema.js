@@ -8,7 +8,7 @@ import {map, mergeAll, filter, pluck} from 'ramda';
  * insertion into table `name`.
  *
  * @function collimator.schema
- * @param {Promise.<Database>} db - The pg-promise connection
+ * @param {Database} db - A pg-promise `Database` instance
  * @param {String} name - The name of the table to get the schema of
  * @returns {Promise.<Object>} A promise that will resolve to the schema for the given table
  */
@@ -57,30 +57,31 @@ export function properties(columns) {
  */
 export function property(column) {
   const TYPES = {
-    bigserial: 'integer',
-    boolean: 'boolean',
-    'character varying': 'string',
-    character: 'string',
-    date: 'string',
-    bigint: 'integer',
-    'double precision': 'number',
-    integer: 'integer',
-    json: 'object',
-    jsonb: 'object',
-    numeric: 'number',
-    real: 'number',
-    smallint: 'integer',
-    smallserial: 'integer',
-    serial: 'integer',
-    text: 'string',
-    'time without time zone': 'string',
-    'timestamp without time zone': 'string'
+    bigserial:   {type: 'integer'},
+    boolean:     {type: 'boolean'},
+    character:   {type: 'string'},
+    date:        {type: 'string'},
+    bigint:      {type: 'integer'},
+    integer:     {type: 'integer'},
+    json:        {type: 'object'},
+    jsonb:       {type: 'object'},
+    numeric:     {type: 'number'},
+    real:        {type: 'number'},
+    smallint:    {type: 'integer'},
+    smallserial: {type: 'integer'},
+    serial:      {type: 'integer'},
+    text:        {type: 'string'},
+
+    'character varying':           {type: 'string'},
+    'double precision':            {type: 'number'},
+    'time without time zone':      {type: 'string', format: 'date-time'},
+    'time with time zone':         {type: 'string', format: 'date-time'},
+    'timestamp without time zone': {type: 'string', format: 'date-time'},
+    'timestamp with time zone':    {type: 'string', format: 'date-time'}
   };
 
   return {
-    [column.name]: {
-      type: TYPES[column.type]
-    }
+    [column.name]: TYPES[column.type]
   };
 }
 
