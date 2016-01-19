@@ -1,7 +1,7 @@
-var pg         = require('pg-promise')();
-var collimator = require('../lib/collimator.js').default;
-var equal      = require('assert').equal;
-var diff       = require('deep-diff').diff;
+var pg      = require('pg-promise')();
+var inspect = require('../lib/collimator').inspect;
+var equal   = require('assert').equal;
+var diff    = require('deep-diff').diff;
 
 var db = pg({database: 'collimator-integration-test'});
 
@@ -71,9 +71,9 @@ var expected = [{
   }
 }];
 
-collimator(db)
+inspect(db)
   .then(function(result) {
-    return diff(result, expected)
+    return diff(result, expected);
   })
   .then(function(diff) {
     equal(diff, undefined);
