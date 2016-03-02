@@ -1,0 +1,18 @@
+{
+  "devDependencies": {
+    "jasmine-rewire": "npm:jasmine-rewire"
+  },
+  "dependencies": {
+    "bluebird": "registry:npm/bluebird#3.3.4+20160427051630"
+  },
+  "ambientDependencies": {
+    "callsite": "registry:dt/callsite#1.0.0+20160316171810",
+    "ext-promise": "github:vitaly-t/pg-promise/typescript/ext-promise.d.ts#4764c45",
+    "jasmine": "registry:dt/jasmine#2.2.0+20160412134438",
+    "node": "registry:dt/node#4.0.0+20160423143914",
+    "pg-minify": "github:vitaly-t/pg-promise/typescript/pg-minify.d.ts#4764c45",
+    "pg-promise": "github:vitaly-t/pg-promise/typescript/pg-promise.d.ts#4764c45",
+    "pg-subset": "github:vitaly-t/pg-promise/typescript/pg-subset.d.ts#4764c45",
+    "ramda": "github:donnut/typescript-ramda#37ea09a"
+  }
+}
