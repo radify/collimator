@@ -2,7 +2,7 @@ import gulp    from 'gulp';
 import {build} from '../package.json';
 
 gulp.on('stop', e => {
-  if (e.name !== 'compile') {
+  if (e.name !== 'compile:es6') {
     return;
   }
 

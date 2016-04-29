@@ -10,19 +10,28 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "babel-core": "^6.2.1",
-    "babel-plugin-rewire": "1.0.0-beta-2",
+    "babel-plugin-rewire": "1.0.0-beta-5",
     "babel-preset-es2015": "^6.1.18",
     "cz-conventional-changelog": "^1.1.5",
     "del": "^2.1.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-babel": "^6.1.0",
+    "gulp-ignore": "^2.0.1",
     "gulp-istanbul": "^0.10.3",
-    "gulp-jasmine": "^2.2.1",
+    "gulp-jasmine": "^2.3.0",
     "gulp-jscs": "^3.0.2",
     "gulp-markdox2": "^1.9.94",
+    "gulp-rename": "^1.2.2",
+    "gulp-typedoc": "github:sierrasoftworks/gulp-typedoc#v1.8.10",
+    "gulp-typescript": "^2.12.0",
     "isparta": "^4.0.0",
+    "jasmine-rewire": "^1.2.0",
+    "merge2": "^1.0.2",
+    "repeating-cli": "^1.0.0",
     "require-dir": "^0.3.0",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "typedoc": "github:sierrasoftworks/typedoc#v1.8.10",
+    "typings": "^0.8.1"
   },
   "babel": {
     "presets": [
@@ -44,6 +53,7 @@
       "docs": "docs",
       "build": "build",
       "coverage": "coverage",
+      "temp": "temp",
       "sql": "src/**/*.sql"
     },
     "watch": {
@@ -70,7 +80,7 @@
     }
   },
   "dependencies": {
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.3.4",
     "callsite": "^1.0.0",
     "ramda": "^0.19.1"
   },

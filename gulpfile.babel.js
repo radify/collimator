@@ -1,8 +1,12 @@
 import gulp     from 'gulp';
+import ts       from 'gulp-typescript';
+import ignore   from 'gulp-ignore';
+import rename   from 'gulp-rename';
+import merge    from 'merge2';
 import babel    from 'gulp-babel';
 import del      from 'del';
 import jasmine  from 'gulp-jasmine';
-import markdox  from 'gulp-markdox2';
+import typedoc  from 'gulp-typedoc';
 import jscs     from 'gulp-jscs';
 import istanbul from 'gulp-istanbul';
 import reqDir   from 'require-dir';
@@ -17,6 +21,7 @@ import {
 
 gulp.task('clean', () => {
   return del([
+    config.paths.temp,
     config.paths.dist,
     config.paths.coverage,
     config.paths.docs
@@ -24,31 +29,69 @@ gulp.task('clean', () => {
 });
 
 function test() {
-  return gulp.src(`${config.paths.spec}/**/*.js`)
+  return gulp.src(`${config.paths.temp}/${config.paths.spec}/**/*.js`)
     .pipe(jasmine());
 }
 gulp.task(test);
 
+/**
 gulp.task('style', () => {
-  return gulp.src(`${config.paths.src}/**/*.js`)
+  return gulp.src(`${config.paths.src}\/**\/*.js`)
     .pipe(jscs())
     .pipe(jscs.reporter())
     .pipe(jscs.reporter('fail'));
 });
+**/
 
 gulp.task('docs', () => {
-  return gulp.src(`${config.paths.src}/**/*.js`)
-    .pipe(markdox({concat: 'API.md'}))
-    .pipe(gulp.dest(config.paths.docs));
+  var sources = [
+    config.paths.src,
+    './typings/main.d.ts'
+  ];
+
+  var options = {
+    excludeNotExported: true,
+    tsconfig: `${__dirname}/tsconfig.json`,
+    mode:     'modules',
+    out:      config.paths.docs
+  };
+
+  return gulp.src(sources)
+    .pipe(typedoc(options));
 });
 
-gulp.task('compile', () => {
-  return gulp.src(`${config.paths.src}/**/*.js`)
+var tsProject = ts.createProject('tsconfig.json', {
+  declaration: true
+});
+gulp.task('compile:ts', () => {
+  var sources = [
+    config.paths.src,
+    'typings/main.d.ts'
+  ];
+
+  var compile = tsProject.src(sources)
+    .pipe(ts(tsProject));
+
+  var js = compile.js
+    .pipe(gulp.dest(config.paths.temp));
+
+  var dts = compile.dts
+    .pipe(ignore.exclude('spec/**'))
+    .pipe(rename(path => {
+      path.dirname = path.dirname.replace('src', './');
+    }))
+    .pipe(gulp.dest(config.paths.dist));
+
+  return merge([js, dts]);
+});
+
+gulp.task('compile:es6', () => {
+  return gulp.src(`${config.paths.temp}/${config.paths.src}/**/*.js`)
     .pipe(babel())
     .pipe(gulp.dest(config.paths.dist));
 });
 
-gulp.task('build',   gulp.series('clean', 'style', 'test', 'compile', 'docs'));
+gulp.task('build',   gulp.series('clean', /*'style',*/ 'compile:ts', 'test', 'compile:es6', 'docs'));
 gulp.task('default', gulp.task('build'));
 
 gulp.task('watch', () => {

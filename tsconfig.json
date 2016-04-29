@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "es2015",
+        "noImplicitAny": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "exclude": [
+        "lib",
+        "node_modules",
+        "typings/browser",
+        "typings/browser.d.ts"
+    ]
+}
