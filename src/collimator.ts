@@ -12,7 +12,7 @@ import relationships, {Relationships} from './inspectors/relationships';
  */
 export interface FullTableDescription extends TableDescription {
   schema: SchemaDocument;
-  relationships: Relationships[];
+  relationships: Relationships;
 }
 
 /**
