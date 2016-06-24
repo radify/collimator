@@ -46,7 +46,7 @@ gulp.task('style', () => {
 gulp.task('docs', () => {
   var sources = [
     config.paths.src,
-    './typings/main.d.ts'
+    './typings/index.d.ts'
   ];
 
   var options = {
