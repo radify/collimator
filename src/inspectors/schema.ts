@@ -101,6 +101,22 @@ export function property(column: Column): SchemaProperties {
     serial:      {type: 'integer'},
     text:        {type: 'string'},
 
+    interval: {
+      type: 'object',
+      format: 'interval',
+      minProperties: 1,
+      additionalProperties: false,
+      properties: {
+        milliseconds: {type: 'integer'},
+        seconds: {type: 'integer'},
+        minutes: {type: 'integer'},
+        hours:   {type: 'integer'},
+        days:    {type: 'integer'},
+        months:  {type: 'ingeger'},
+        years:   {type: 'integer'}
+      }
+    },
+
     'character varying':           {type: 'string'},
     'double precision':            {type: 'number'},
     'time without time zone':      {type: 'string', format: 'date-time'},

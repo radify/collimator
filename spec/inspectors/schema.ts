@@ -109,6 +109,33 @@ describe('schema', () => {
         }
       });
     });
+
+    it('converts `interval` to an object with `properties` and `minProperties` statements', () => {
+      var result = property({
+        name:     'time_taken',
+        nullable: false,
+        default:  null,
+        type:     'interval'
+      });
+
+      expect(result).toEqual({
+        time_taken: {
+          type: 'object',
+          format: 'interval',
+          minProperties: 1,
+          additionalProperties: false,
+          properties: {
+            milliseconds: {type: 'integer'},
+            seconds: {type: 'integer'},
+            minutes: {type: 'integer'},
+            hours:   {type: 'integer'},
+            days:    {type: 'integer'},
+            months:  {type: 'ingeger'},
+            years:   {type: 'integer'}
+          }
+        }
+      })
+    });
   });
 
   describe('.required()', () => {
