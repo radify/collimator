@@ -2,6 +2,7 @@ import Promise, {props} from 'bluebird';
 import {IDatabase} from 'pg-promise';
 import {merge}     from 'ramda';
 
+import views,  {ViewDescription}      from './inspectors/views';
 import tables, {TableDescription}     from './inspectors/tables';
 import schema, {SchemaDocument}       from './inspectors/schema';
 import relationships, {Relationships} from './inspectors/relationships';
@@ -10,9 +11,22 @@ import relationships, {Relationships} from './inspectors/relationships';
  * Extended description of a Table that includes information about the table
  * schema and relationships to other tables
  */
-export interface FullTableDescription extends TableDescription {
+export interface ExtendedTableDescription {
   schema: SchemaDocument;
   relationships: Relationships;
+}
+
+/**
+ * Extended description of a View that includes information about the schema and used tables
+ */
+export interface ExtendedViewDescription {
+  schema: SchemaDocument;
+  //usedTables: string[];
+}
+
+export interface InspectResult {
+  tables: Array<TableDescription & ExtendedTableDescription>;
+  views: Array<ViewDescription & ExtendedViewDescription>;
 }
 
 /**
@@ -22,17 +36,24 @@ export interface FullTableDescription extends TableDescription {
  * @param db A pg-promise database instance
  * @returns  A promise that will resolve to the information for each table
  */
-export function inspect(db: IDatabase<any>): Promise<FullTableDescription[]> {
-  function inspectors(table: TableDescription) {
-    var queries = {
+export function inspect(db: IDatabase<any>): Promise<InspectResult> {
+  const inspectTable = (table: TableDescription) =>
+    (props({
       schema: schema(db, table.name),
       relationships: relationships(db, table.name)
-    };
+    }) as Promise<ExtendedTableDescription>)
+    .then(merge(table));
 
-    return <Promise<FullTableDescription>> props(queries).then(merge(table));
-  }
+  const inspectView = (view: ViewDescription) =>
+    (props({
+      schema: schema(db, view.name)
+    }) as Promise<ExtendedViewDescription>)
+    .then(merge(view));
 
-  return tables(db).map(inspectors);
+  return props({
+    tables: tables(db).map(inspectTable),
+    views:  views(db).map(inspectView)
+  }) as Promise<InspectResult>;
 }
 
 export {tables, schema, relationships};

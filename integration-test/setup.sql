@@ -23,4 +23,17 @@ CREATE TABLE users
   PRIMARY KEY (id)
 );
 
+CREATE VIEW completed_tasks AS
+SELECT
+  users.id,
+  users.username,
+  COUNT(tasks.*) AS completed
+FROM tasks
+INNER JOIN users
+  ON users.id = tasks.owner
+WHERE
+  tasks.complete = true
+GROUP BY
+  users.id;
+
 ALTER TABLE tasks ADD FOREIGN KEY (owner) REFERENCES users;
