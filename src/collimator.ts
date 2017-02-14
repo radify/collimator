@@ -5,6 +5,7 @@ import {merge}     from 'ramda';
 import views,  {ViewDescription}      from './inspectors/views';
 import tables, {TableDescription}     from './inspectors/tables';
 import schema, {SchemaDocument}       from './inspectors/schema';
+import usedTables, {UsedTable}        from './inspectors/usedTables';
 import relationships, {Relationships} from './inspectors/relationships';
 
 /**
@@ -21,7 +22,7 @@ export interface ExtendedTableDescription {
  */
 export interface ExtendedViewDescription {
   schema: SchemaDocument;
-  //usedTables: string[];
+  uses: UsedTable[];
 }
 
 export interface InspectResult {
@@ -46,7 +47,8 @@ export function inspect(db: IDatabase<any>): Promise<InspectResult> {
 
   const inspectView = (view: ViewDescription) =>
     (props({
-      schema: schema(db, view.name)
+      schema: schema(db, view.name),
+      uses: usedTables(db, view.name),
     }) as Promise<ExtendedViewDescription>)
     .then(merge(view));
 

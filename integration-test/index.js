@@ -103,7 +103,12 @@ var expected = {
       },
 
       required: []
-    }
+    },
+    uses: [{
+      name: 'tasks'
+    }, {
+      name: 'users'
+    }]
   }]
 };
 

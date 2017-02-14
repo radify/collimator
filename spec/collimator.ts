@@ -9,6 +9,7 @@ describe('collimator', () => {
     views: jasmine.createSpy('views').and.callFake(() => resolve([{name: 'mockView'}])),
     tables: jasmine.createSpy('tables').and.callFake(() => resolve([{name: 'mockTable'}])),
     schema: jasmine.createSpy('schema').and.callFake(() => resolve('mockSchema')),
+    usedTables: jasmine.createSpy('usedTables').and.callFake(() => resolve('mockUsedTables')),
     relationships: jasmine.createSpy('relationships').and.callFake(() => resolve('mockRelationships')),
   }), {
     database: <IDatabase<Object>>{}
@@ -22,6 +23,7 @@ describe('collimator', () => {
           expect(mocks.tables).toHaveBeenCalledWith(mocks.database);
           expect(mocks.schema).toHaveBeenCalledWith(mocks.database, 'mockView');
           expect(mocks.schema).toHaveBeenCalledWith(mocks.database, 'mockTable');
+          expect(mocks.usedTables).toHaveBeenCalledWith(mocks.database, 'mockView');
           expect(mocks.relationships).toHaveBeenCalledWith(mocks.database, 'mockTable');
 
           expect(result).toEqual({
@@ -32,7 +34,8 @@ describe('collimator', () => {
             }],
             views: [{
               name: 'mockView',
-              schema: 'mockSchema'
+              schema: 'mockSchema',
+              uses: 'mockUsedTables'
             }]
           });
         })
