@@ -14,10 +14,10 @@ describe('schema', () => {
   var mocks:any = {
     database: 'mockDatabase' as any as IDatabase<any>,
     columns: <Column[]>[
-      {name: 'forename', nullable: false, default: null, type: 'character varying'},
-      {name: 'surname',  nullable: false, default: null, type: 'character varying'},
-      {name: 'age',      nullable: false, default: 30,   type: 'smallint'},
-      {name: 'gender',   nullable: true,  default: null, type: 'character'}
+      {name: 'forename', nullable: false, default: null, type: 'character varying', isprimarykey: false},
+      {name: 'surname',  nullable: false, default: null, type: 'character varying', isprimarykey: false},
+      {name: 'age',      nullable: false, default: 30,   type: 'smallint', isprimarykey: false},
+      {name: 'gender',   nullable: true,  default: null, type: 'character', isprimarykey: false}
     ]
   };
 
@@ -99,7 +99,8 @@ describe('schema', () => {
         name:     'date_of_birth',
         nullable: false,
         default:  null,
-        type:     'time without time zone'
+        type:     'time without time zone',
+        isprimarykey: false
       });
 
       expect(result).toEqual({
@@ -115,7 +116,8 @@ describe('schema', () => {
         name:     'time_taken',
         nullable: false,
         default:  null,
-        type:     'interval'
+        type:     'interval',
+        isprimarykey: false
       });
 
       expect(result).toEqual({
@@ -135,6 +137,23 @@ describe('schema', () => {
           }
         }
       })
+    });
+
+    it('declares columns that are primary keys and have a default that uses a sequence as `readOnly`', () => {
+      var result = property({
+        name: 'id',
+        nullable: false,
+        default: "nextval('test_id_seq'::regclass)",
+        type: 'integer',
+        isprimarykey: true
+      });
+
+      expect(result).toEqual({
+        id: {
+          type: 'integer',
+          readOnly: true
+        }
+      });
     });
   });
 
