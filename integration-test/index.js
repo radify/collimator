@@ -16,7 +16,7 @@ var expected = {
       type: 'object',
 
       properties: {
-        id: {type: 'integer'},
+        id: {type: 'integer', readOnly: true},
         username: {type: 'string'},
         password: {type: 'string'},
         created_at: {
@@ -37,10 +37,13 @@ var expected = {
         name: 'tasks',
         from: 'id',
         to: 'owner'
+      }, {
+        name: 'task_watchers',
+        from: 'id',
+        to: 'user_id'
       }]
     }
-  },
-  {
+  }, {
     name: 'tasks',
     primaryKeys: ['id'],
     schema: {
@@ -49,7 +52,8 @@ var expected = {
       type: 'object',
       properties: {
         id: {
-          type: 'integer'
+          type: 'integer',
+          readOnly: true
         },
         title: {
           type: 'string'
@@ -78,6 +82,39 @@ var expected = {
       belongsTo: [{
         name: 'users',
         from: 'owner',
+        to: 'id'
+      }],
+      has: [{
+        name: 'task_watchers',
+        from: 'id',
+        to: 'task_id'
+      }]
+    }
+  }, {
+    name: 'task_watchers',
+    primaryKeys: ['task_id', 'user_id'],
+    schema: {
+      $schema: 'http://json-schema.org/draft-04/schema#',
+      title: 'task_watchers',
+      type: 'object',
+      properties: {
+        user_id: {
+          type: 'integer'
+        },
+        task_id: {
+          type: 'integer'
+        }
+      },
+      required: ['user_id', 'task_id']
+    },
+    relationships: {
+      belongsTo: [{
+        name: 'users',
+        from: 'user_id',
+        to: 'id'
+      }, {
+        name: 'tasks',
+        from: 'task_id',
         to: 'id'
       }],
       has: []

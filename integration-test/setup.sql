@@ -23,6 +23,13 @@ CREATE TABLE users
   PRIMARY KEY (id)
 );
 
+CREATE TABLE task_watchers
+(
+  user_id integer NOT NULL,
+  task_id integer NOT NULL,
+  PRIMARY key (user_id, task_id)
+);
+
 CREATE VIEW completed_tasks AS
 SELECT
   users.id,
@@ -37,3 +44,5 @@ GROUP BY
   users.id;
 
 ALTER TABLE tasks ADD FOREIGN KEY (owner) REFERENCES users;
+ALTER TABLE task_watchers ADD FOREIGN KEY (user_id) REFERENCES users;
+ALTER TABLE task_watchers ADD FOREIGN KEY (task_id) REFERENCES tasks;
