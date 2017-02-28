@@ -12,6 +12,7 @@ export interface Column {
   type:     string;
   nullable: boolean;
   default:  string | number;
+  isprimarykey: boolean;
 }
 
 /**
@@ -125,8 +126,19 @@ export function property(column: Column): SchemaProperties {
     'timestamp with time zone':    {type: 'string', format: 'date-time'}
   };
 
+  var col = TYPES[column.type];
+
+  var isPrimary = column.isprimarykey &&
+    column.nullable === false &&
+    typeof column.default === 'string' &&
+    (column.default as string).startsWith('nextval');
+
+  if (isPrimary) {
+    col.readOnly = true;
+  }
+
   return {
-    [column.name]: TYPES[column.type]
+    [column.name]: col
   };
 }
 
