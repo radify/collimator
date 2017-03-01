@@ -90,7 +90,6 @@ export function property(column: Column): SchemaProperties {
     bigserial:   {type: 'integer'},
     boolean:     {type: 'boolean'},
     character:   {type: 'string'},
-    date:        {type: 'string'},
     bigint:      {type: 'integer'},
     integer:     {type: 'integer'},
     json:        {type: 'object'},
@@ -120,6 +119,7 @@ export function property(column: Column): SchemaProperties {
 
     'character varying':           {type: 'string'},
     'double precision':            {type: 'number'},
+    'date':                        {type: 'string', format: 'date-time'},
     'time without time zone':      {type: 'string', format: 'date-time'},
     'time with time zone':         {type: 'string', format: 'date-time'},
     'timestamp without time zone': {type: 'string', format: 'date-time'},
