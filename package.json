@@ -82,7 +82,7 @@
   "dependencies": {
     "bluebird": "^3.3.4",
     "callsite": "^1.0.0",
-    "ramda": "^0.19.1"
+    "ramda": "^0.22.1"
   },
   "scripts": {
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"

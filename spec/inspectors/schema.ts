@@ -155,6 +155,26 @@ describe('schema', () => {
         }
       });
     });
+
+    it('declares columns that use a CHECK constraint to match an array of values as `enum`', () => {
+      var result = property({
+        name: 'status',
+        nullable: false,
+        default: null,
+        type: 'text',
+        isprimarykey: false,
+        constraints: [
+          "(status = ANY (ARRAY['new'::text, 'started'::text, 'complete'::text]))"
+        ]
+      });
+
+      expect(result).toEqual({
+        status: {
+          type: 'string',
+          enum: ['new', 'started', 'complete']
+        }
+      });
+    });
   });
 
   describe('.required()', () => {

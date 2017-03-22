@@ -61,8 +61,9 @@ var expected = {
         description: {
           type: 'string'
         },
-        complete: {
-          type: 'boolean'
+        status: {
+          type: 'string',
+          enum: ['new', 'started', 'complete']
         },
         created_at: {
           type: 'string',
