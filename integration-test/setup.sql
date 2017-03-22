@@ -6,11 +6,17 @@ CREATE TABLE tasks
   id serial,
   title character varying(255) NOT NULL,
   description character varying(255),
-  complete boolean NOT NULL DEFAULT false,
+  status text,
   created_at timestamp with time zone DEFAULT now(),
   updated_at timestamp with time zone DEFAULT now(),
   owner integer NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+
+  CONSTRAINT status_is_valid CHECK (
+    status = any(
+      array['new', 'started', 'complete']
+    )
+  )
 );
 
 CREATE TABLE users
@@ -39,7 +45,7 @@ FROM tasks
 INNER JOIN users
   ON users.id = tasks.owner
 WHERE
-  tasks.complete = true
+  tasks.status = 'complete'
 GROUP BY
   users.id;
 

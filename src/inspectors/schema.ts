@@ -1,6 +1,6 @@
 import Promise     from 'bluebird';
 import {IDatabase} from 'pg-promise';
-import {mergeAll}  from 'ramda';
+import {mergeAll, flatten}  from 'ramda';
 
 import query from '../util/fileQuery';
 
@@ -13,6 +13,7 @@ export interface Column {
   nullable: boolean;
   default:  string | number;
   isprimarykey: boolean;
+  constraints?: string[];
 }
 
 /**
@@ -30,9 +31,17 @@ export interface SchemaDocument {
  * Describes an object's properties according to the JSON Schema standard
  */
 export interface SchemaProperties {
-  [name: string]: {
-    type: string
-  }
+  [name: string]: PropertyAttributes;
+}
+
+/**
+ * Describes an individual properties' attributes according to the JSON Schema
+ * standard
+ */
+export interface PropertyAttributes {
+  type: string;
+  readOnly?: boolean;
+  enum?: any[];
 }
 
 /**
@@ -126,20 +135,72 @@ export function property(column: Column): SchemaProperties {
     'timestamp with time zone':    {type: 'string', format: 'date-time'}
   };
 
-  var col = TYPES[column.type];
+  return {
+    [column.name]: mergeAll<PropertyAttributes>([
+      TYPES[column.type],
+      isReadOnly(column),
+      isEnumConstraint(column)
+    ])
+  };
+}
 
+/**
+ * Determines if a column should be declared read-only by determining if the
+ * column is a primary key that uses a sequence
+ *
+ * @param column The column to inspect
+ * @returns `{readOnly: true}` if the column should be marked read-only
+ */
+export function isReadOnly(column: Column) {
   var isPrimary = column.isprimarykey &&
     column.nullable === false &&
     typeof column.default === 'string' &&
     (column.default as string).startsWith('nextval');
 
   if (isPrimary) {
-    col.readOnly = true;
+    return {readOnly: true};
+  }
+}
+
+/**
+ * Determines if a column should be declared an enumeration by determining if
+ * the column contains a suitable CHECK constraint
+ *
+ * @param column the column to inspect
+ * @returns `{enum: [values]}` if the column contains a suitable CHECK contraint
+ */
+export function isEnumConstraint(column: Column) {
+  if (!column.constraints || !column.constraints.length) {
+    return;
   }
 
-  return {
-    [column.name]: col
-  };
+  const ENUM_CHECK_REGEX = /^\(.* = ANY \(ARRAY\[(.*)\]\)\)/;
+  const ENUM_EXTRACT_VALUE_REGEX = /^'(.*)'::.*/;
+
+  var values = column.constraints
+    .map(constraint => {
+      if (!constraint) {
+        return;
+      }
+
+      var [match, values] = constraint.match(ENUM_CHECK_REGEX);
+      if (!values) {
+        return;
+      }
+
+      return values.split(', ')
+        .map(value => {
+          var [match, value] = value.match(ENUM_EXTRACT_VALUE_REGEX);
+          return value;
+        })
+    })
+    .filter(values => !!values);
+
+  if (!values.length) {
+    return;
+  }
+
+  return {enum: flatten(values)};
 }
 
 /**
