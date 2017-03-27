@@ -127,13 +127,13 @@ describe('schema', () => {
           minProperties: 1,
           additionalProperties: false,
           properties: {
-            milliseconds: {type: 'integer'},
-            seconds: {type: 'integer'},
-            minutes: {type: 'integer'},
-            hours:   {type: 'integer'},
-            days:    {type: 'integer'},
-            months:  {type: 'ingeger'},
-            years:   {type: 'integer'}
+            milliseconds: {type: 'number'},
+            seconds: {type: 'number'},
+            minutes: {type: 'number'},
+            hours:   {type: 'number'},
+            days:    {type: 'number'},
+            months:  {type: 'number'},
+            years:   {type: 'number'}
           }
         }
       })
@@ -150,7 +150,7 @@ describe('schema', () => {
 
       expect(result).toEqual({
         id: {
-          type: 'integer',
+          type: 'number',
           readOnly: true
         }
       });
