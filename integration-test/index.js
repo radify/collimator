@@ -16,7 +16,7 @@ var expected = {
       type: 'object',
 
       properties: {
-        id: {type: 'integer', readOnly: true},
+        id: {type: 'number', readOnly: true},
         username: {type: 'string'},
         password: {type: 'string'},
         created_at: {
@@ -52,7 +52,7 @@ var expected = {
       type: 'object',
       properties: {
         id: {
-          type: 'integer',
+          type: 'number',
           readOnly: true
         },
         title: {
@@ -74,7 +74,7 @@ var expected = {
           format: 'date-time'
         },
         owner: {
-          type: 'integer'
+          type: 'number'
         }
       },
       required: ['title', 'owner']
@@ -100,10 +100,10 @@ var expected = {
       type: 'object',
       properties: {
         user_id: {
-          type: 'integer'
+          type: 'number'
         },
         task_id: {
-          type: 'integer'
+          type: 'number'
         }
       },
       required: ['user_id', 'task_id']
@@ -130,13 +130,13 @@ var expected = {
 
       properties: {
         id: {
-          type: 'integer'
+          type: 'number'
         },
         username: {
           type: 'string'
         },
         completed: {
-          type: 'integer'
+          type: 'number'
         }
       },
 
