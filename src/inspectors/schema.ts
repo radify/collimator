@@ -96,18 +96,18 @@ export function properties(columns: Column[]): SchemaProperties {
  */
 export function property(column: Column): SchemaProperties {
   const TYPES:any = {
-    bigserial:   {type: 'integer'},
+    bigserial:   {type: 'number'},
     boolean:     {type: 'boolean'},
     character:   {type: 'string'},
-    bigint:      {type: 'integer'},
-    integer:     {type: 'integer'},
+    bigint:      {type: 'number'},
+    integer:     {type: 'number'},
     json:        {type: 'object'},
     jsonb:       {type: 'object'},
     numeric:     {type: 'number'},
     real:        {type: 'number'},
-    smallint:    {type: 'integer'},
-    smallserial: {type: 'integer'},
-    serial:      {type: 'integer'},
+    smallint:    {type: 'number'},
+    smallserial: {type: 'number'},
+    serial:      {type: 'number'},
     text:        {type: 'string'},
 
     interval: {
@@ -116,13 +116,13 @@ export function property(column: Column): SchemaProperties {
       minProperties: 1,
       additionalProperties: false,
       properties: {
-        milliseconds: {type: 'integer'},
-        seconds: {type: 'integer'},
-        minutes: {type: 'integer'},
-        hours:   {type: 'integer'},
-        days:    {type: 'integer'},
-        months:  {type: 'ingeger'},
-        years:   {type: 'integer'}
+        milliseconds: {type: 'number'},
+        seconds: {type: 'number'},
+        minutes: {type: 'number'},
+        hours:   {type: 'number'},
+        days:    {type: 'number'},
+        months:  {type: 'number'},
+        years:   {type: 'number'}
       }
     },
 
