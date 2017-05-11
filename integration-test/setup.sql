@@ -16,6 +16,10 @@ CREATE TABLE tasks
     status = any(
       array['new', 'started', 'complete']
     )
+  ),
+
+  CONSTRAINT updated_at_in_future CHECK (
+    updated_at > NOW()
   )
 );
 
