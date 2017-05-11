@@ -183,12 +183,12 @@ export function isEnumConstraint(column: Column) {
         return;
       }
 
-      var [match, values] = constraint.match(ENUM_CHECK_REGEX);
-      if (!values) {
+      var result = constraint.match(ENUM_CHECK_REGEX);
+      if (!result || !result[1]) {
         return;
       }
 
-      return values.split(', ')
+      return result[1].split(', ')
         .map(value => {
           var [match, value] = value.match(ENUM_EXTRACT_VALUE_REGEX);
           return value;
