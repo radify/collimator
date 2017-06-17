@@ -6,6 +6,7 @@
     "url": "https://github.com/radify/collimator.git"
   },
   "main": "lib/collimator.js",
+  "types": "lib/collimator.d.ts",
   "author": "Radify",
   "license": "BSD-3-Clause",
   "devDependencies": {

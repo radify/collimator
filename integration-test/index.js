@@ -136,7 +136,8 @@ var expected = {
           type: 'string'
         },
         completed: {
-          type: 'number'
+          type: 'string',
+          pattern: '^\\d+$'
         }
       },
 
