@@ -96,10 +96,10 @@ export function properties(columns: Column[]): SchemaProperties {
  */
 export function property(column: Column): SchemaProperties {
   const TYPES:any = {
-    bigserial:   {type: 'number'},
+    bigserial:   {type: 'string', pattern: '^\\d+$'},
     boolean:     {type: 'boolean'},
     character:   {type: 'string'},
-    bigint:      {type: 'number'},
+    bigint:      {type: 'string', pattern: '^\\d+$'},
     integer:     {type: 'number'},
     json:        {type: 'object'},
     jsonb:       {type: 'object'},
