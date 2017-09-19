@@ -6,18 +6,19 @@ import schema, {
   Column
 } from '../../src/inspectors/schema';
 
-import {IDatabase} from 'pg-promise';
-import {resolve}   from 'bluebird';
-import rewire      from 'jasmine-rewire';
+import { IDatabase } from 'pg-promise';
+import { resolve } from 'bluebird';
+import rewire from 'jasmine-rewire';
 
 describe('schema', () => {
-  var mocks:any = {
+  var mocks: any = {
     database: 'mockDatabase' as any as IDatabase<any>,
     columns: <Column[]>[
-      {name: 'forename', nullable: false, default: null, type: 'character varying', isprimarykey: false},
-      {name: 'surname',  nullable: false, default: null, type: 'character varying', isprimarykey: false},
-      {name: 'age',      nullable: false, default: 30,   type: 'smallint', isprimarykey: false},
-      {name: 'gender',   nullable: true,  default: null, type: 'character', isprimarykey: false}
+      { name: 'forename', nullable: false, default: null, type: 'character varying', isprimarykey: false },
+      { name: 'surname', nullable: false, default: null, type: 'character varying', isprimarykey: false },
+      { name: 'age', nullable: false, default: 30, type: 'smallint', isprimarykey: false },
+      { name: 'gender', nullable: true, default: null, type: 'character', isprimarykey: false },
+      { name: 'rating', nullable: true, default: null, type: 'numeric', isprimarykey: false }
     ]
   };
 
@@ -32,8 +33,8 @@ describe('schema', () => {
 
       schema(mocks.database, 'tableName')
         .then(result => {
-          expect(mocks.query).toHaveBeenCalledWith(mocks.database, './schema.sql', {name: 'tableName'});
-          expect(mocks.table).toHaveBeenCalledWith('tableName', mocks.columns);
+          expect(mocks.query).toHaveBeenCalledWith(mocks.database, './schema.sql', { name: 'tableName' });
+          expect(mocks.table).toHaveBeenCalledWith('tableName', mocks.columns, {});
           expect(result).toBe('mockSchema');
         })
         .then(done);
@@ -43,28 +44,28 @@ describe('schema', () => {
   describe('.table()', () => {
     Object.assign(mocks, rewire(schema, {
       properties: jasmine.createSpy('properties').and.returnValue('mockPropertyObject'),
-      required:   jasmine.createSpy('required').and.returnValue('mockRequiredArray')
+      required: jasmine.createSpy('required').and.returnValue('mockRequiredArray')
     }));
 
     it('returns a JSON Schema object', () => {
       var result = table('myTable', mocks.columns);
 
-      expect(mocks.properties).toHaveBeenCalledWith(mocks.columns);
-      expect(mocks.required).toHaveBeenCalledWith(mocks.columns);
+      expect(mocks.properties).toHaveBeenCalledWith(mocks.columns, {});
+      expect(mocks.required).toHaveBeenCalledWith(mocks.columns, {});
 
       expect(result).toEqual({
-        $schema:    'http://json-schema.org/draft-04/schema#',
-        title:      'myTable',
-        type:       'object',
+        $schema: 'http://json-schema.org/draft-04/schema#',
+        title: 'myTable',
+        type: 'object',
         properties: 'mockPropertyObject',
-        required:   'mockRequiredArray'
+        required: 'mockRequiredArray'
       });
     });
   });
 
   describe('.properties()', () => {
     Object.assign(mocks, rewire(schema, {
-      property: jasmine.createSpy('property').and.callFake((column:Column) => ({
+      property: jasmine.createSpy('property').and.callFake((column: Column) => ({
         [column.name]: 'mockSchemaObject'
       }))
     }));
@@ -72,12 +73,8 @@ describe('schema', () => {
     it('returns an object representing schema for all columns', () => {
       var result = properties(mocks.columns);
 
-      mocks.columns.forEach((column:Column) => {
-        expect(mocks.property).toHaveBeenCalledWith(
-          column,
-          jasmine.any(Number),
-          jasmine.any(Array)
-        );
+      mocks.columns.forEach((column: Column) => {
+        expect(mocks.property).toHaveBeenCalledWith(column, {});
         expect(result[column.name]).toBe('mockSchemaObject');
       });
     });
@@ -96,16 +93,16 @@ describe('schema', () => {
 
     it('converts timestamps to strings with `date-time` format', () => {
       var result = property({
-        name:     'date_of_birth',
+        name: 'date_of_birth',
         nullable: false,
-        default:  null,
-        type:     'time without time zone',
+        default: null,
+        type: 'time without time zone',
         isprimarykey: false
       });
 
       expect(result).toEqual({
         date_of_birth: {
-          type:   'string',
+          type: 'string',
           format: 'date-time'
         }
       });
@@ -113,10 +110,10 @@ describe('schema', () => {
 
     it('converts `interval` to an object with `properties` and `minProperties` statements', () => {
       var result = property({
-        name:     'time_taken',
+        name: 'time_taken',
         nullable: false,
-        default:  null,
-        type:     'interval',
+        default: null,
+        type: 'interval',
         isprimarykey: false
       });
 
@@ -127,13 +124,13 @@ describe('schema', () => {
           minProperties: 1,
           additionalProperties: false,
           properties: {
-            milliseconds: {type: 'number'},
-            seconds: {type: 'number'},
-            minutes: {type: 'number'},
-            hours:   {type: 'number'},
-            days:    {type: 'number'},
-            months:  {type: 'number'},
-            years:   {type: 'number'}
+            milliseconds: { type: 'number' },
+            seconds: { type: 'number' },
+            minutes: { type: 'number' },
+            hours: { type: 'number' },
+            days: { type: 'number' },
+            months: { type: 'number' },
+            years: { type: 'number' }
           }
         }
       })
@@ -173,6 +170,38 @@ describe('schema', () => {
           type: 'string',
           enum: ['new', 'started', 'complete']
         }
+      });
+    });
+
+    describe('when called with `looseNumbers` option', () => {
+      it('allows integer-type columns to be `number` or `string` with pattern', () => {
+        var result = property(mocks.columns[2], { looseNumbers: true });
+
+        expect(result).toEqual({
+          age: {
+            oneOf: [{
+              type: 'number'
+            }, {
+              type: 'string',
+              pattern: '^\\d+$'
+            }]
+          }
+        })
+      });
+
+      it('allows decimal-type columns to be `number` or `string` with pattern', () => {
+        var result = property(mocks.columns[4], { looseNumbers: true });
+
+        expect(result).toEqual({
+          rating: {
+            oneOf: [{
+              type: 'number'
+            }, {
+              type: 'string',
+              pattern: '^[1-9]\d*(\.\d+)?$'
+            }]
+          }
+        })
       });
     });
   });

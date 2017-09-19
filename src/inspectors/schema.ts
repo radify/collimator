@@ -1,17 +1,18 @@
-import Promise     from 'bluebird';
-import {IDatabase} from 'pg-promise';
-import {mergeAll, flatten}  from 'ramda';
+import Promise from 'bluebird';
+import { IDatabase } from 'pg-promise';
+import { mergeAll, flatten } from 'ramda';
 
 import query from '../util/fileQuery';
+import { Options } from '../collimator';
 
 /**
  * Representation of columns enumerated by the schema query
  */
 export interface Column {
-  name:     string;
-  type:     string;
+  name: string;
+  type: string;
   nullable: boolean;
-  default:  string | number;
+  default: string | number;
   isprimarykey: boolean;
   constraints?: string[];
 }
@@ -20,11 +21,11 @@ export interface Column {
  * Describes an object according to the JSON Schema v4 standard
  */
 export interface SchemaDocument {
-  $schema:    string;
-  title:      string;
-  type:       string;
+  $schema: string;
+  title: string;
+  type: string;
   properties: SchemaProperties;
-  required:   string[];
+  required: string[];
 }
 
 /**
@@ -52,11 +53,12 @@ export interface PropertyAttributes {
  *
  * @param db   A pg-promise database instance
  * @param name The name of the table to generate a schema for
+ * @param options Options to use for schema creation
  * @returns A promise that will resolve to the schema for the given table
  */
-export default function schema(db: IDatabase<any>, name: string): Promise<SchemaDocument> {
-  return query(db, './schema.sql', {name: name})
-    .then(columns => table(name, columns));
+export default function schema(db: IDatabase<any>, name: string, options: Options = {}): Promise<SchemaDocument> {
+  return query(db, './schema.sql', { name: name })
+    .then(columns => table(name, columns, options));
 }
 
 /**
@@ -64,15 +66,16 @@ export default function schema(db: IDatabase<any>, name: string): Promise<Schema
  *
  * @param name    The name of the table being documented
  * @param columns The columns being documented
+ * @param options Options to use for schema creation
  * @returns       A JSON Schema v4 document that describes the given table
  */
-export function table(name: string, columns: Column[]): SchemaDocument {
+export function table(name: string, columns: Column[], options: Options = {}): SchemaDocument {
   return {
-    $schema:    'http://json-schema.org/draft-04/schema#',
-    title:      name,
-    type:       'object',
-    properties: properties(columns),
-    required:   required(columns)
+    $schema: 'http://json-schema.org/draft-04/schema#',
+    title: name,
+    type: 'object',
+    properties: properties(columns, options),
+    required: required(columns, options)
   };
 }
 
@@ -81,10 +84,11 @@ export function table(name: string, columns: Column[]): SchemaDocument {
  * column, keyed by name
  *
  * @param columns The columns to document
+ * @param options Options to use for schema creation
  * @returns       A map of JSON Schema property definitions, keyed by column name
  */
-export function properties(columns: Column[]): SchemaProperties {
-  var columnProperties = columns.map(property);
+export function properties(columns: Column[], options: Options = {}): SchemaProperties {
+  var columnProperties = columns.map(column => property(column, options));
   return mergeAll<SchemaProperties>(columnProperties);
 }
 
@@ -92,23 +96,47 @@ export function properties(columns: Column[]): SchemaProperties {
  * Dcouments a single column according to JSON Schema semantics
  *
  * @param column The column to document
+ * @param options Options to use for schema creation
  * @returns      A JSON Schema property definition
  */
-export function property(column: Column): SchemaProperties {
-  const TYPES:any = {
-    bigserial:   {type: 'string', pattern: '^\\d+$'},
-    boolean:     {type: 'boolean'},
-    character:   {type: 'string'},
-    bigint:      {type: 'string', pattern: '^\\d+$'},
-    integer:     {type: 'number'},
-    json:        {type: 'object'},
-    jsonb:       {type: 'object'},
-    numeric:     {type: 'number'},
-    real:        {type: 'number'},
-    smallint:    {type: 'number'},
-    smallserial: {type: 'number'},
-    serial:      {type: 'number'},
-    text:        {type: 'string'},
+export function property(column: Column, options: Options = {}): SchemaProperties {
+  const TYPE_STRING_INTEGER = {
+    type: 'string',
+    pattern: '^\\d+$'
+  };
+
+  const TYPE_STRING_DECIMAL = {
+    type: 'string',
+    pattern: '^[1-9]\d*(\.\d+)?$'
+  };
+
+  const TYPE_NUMBER = {
+    type: 'number'
+  };
+
+  const TYPE_INTEGER = options.looseNumbers ? {
+    oneOf: [TYPE_NUMBER, TYPE_STRING_INTEGER]
+  } : TYPE_NUMBER;
+
+  const TYPE_DECIMAL = options.looseNumbers ? {
+    oneOf: [TYPE_NUMBER, TYPE_STRING_DECIMAL]
+  } : TYPE_NUMBER;
+
+  const TYPES: any = {
+    bigserial: TYPE_STRING_INTEGER,
+    boolean: { type: 'boolean' },
+    character: { type: 'string' },
+    bigint: TYPE_STRING_INTEGER,
+    integer: TYPE_INTEGER,
+    json: { type: 'object' },
+    jsonb: { type: 'object' },
+    numeric: TYPE_DECIMAL,
+
+    real: TYPE_DECIMAL,
+    smallint: TYPE_INTEGER,
+    smallserial: TYPE_INTEGER,
+    serial: TYPE_INTEGER,
+    text: { type: 'string' },
 
     interval: {
       type: 'object',
@@ -116,23 +144,23 @@ export function property(column: Column): SchemaProperties {
       minProperties: 1,
       additionalProperties: false,
       properties: {
-        milliseconds: {type: 'number'},
-        seconds: {type: 'number'},
-        minutes: {type: 'number'},
-        hours:   {type: 'number'},
-        days:    {type: 'number'},
-        months:  {type: 'number'},
-        years:   {type: 'number'}
+        milliseconds: { type: 'number' },
+        seconds: { type: 'number' },
+        minutes: { type: 'number' },
+        hours: { type: 'number' },
+        days: { type: 'number' },
+        months: { type: 'number' },
+        years: { type: 'number' }
       }
     },
 
-    'character varying':           {type: 'string'},
-    'double precision':            {type: 'number'},
-    'date':                        {type: 'string', format: 'date-time'},
-    'time without time zone':      {type: 'string', format: 'date-time'},
-    'time with time zone':         {type: 'string', format: 'date-time'},
-    'timestamp without time zone': {type: 'string', format: 'date-time'},
-    'timestamp with time zone':    {type: 'string', format: 'date-time'}
+    'character varying': { type: 'string' },
+    'double precision': TYPE_DECIMAL,
+    'date': { type: 'string', format: 'date-time' },
+    'time without time zone': { type: 'string', format: 'date-time' },
+    'time with time zone': { type: 'string', format: 'date-time' },
+    'timestamp without time zone': { type: 'string', format: 'date-time' },
+    'timestamp with time zone': { type: 'string', format: 'date-time' }
   };
 
   return {
@@ -158,7 +186,7 @@ export function isReadOnly(column: Column) {
     (column.default as string).startsWith('nextval');
 
   if (isPrimary) {
-    return {readOnly: true};
+    return { readOnly: true };
   }
 }
 
@@ -200,7 +228,7 @@ export function isEnumConstraint(column: Column) {
     return;
   }
 
-  return {enum: flatten(values)};
+  return { enum: flatten(values) };
 }
 
 /**
@@ -210,7 +238,7 @@ export function isEnumConstraint(column: Column) {
  * @param columns The columns to document
  * @returns       A list of property names that are required
  */
-export function required(columns: Column[]): string[] {
+export function required(columns: Column[], options: Options = {}): string[] {
   function isRequired(column: Column): boolean {
     return column.nullable === false && column.default === null;
   }
