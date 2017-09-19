@@ -35,6 +35,17 @@ Extract relationship information with `collimator.relationships(db, 'tableName')
 
 The top-level Collimator functions (`tables`, `schema` and `relationships`) accept a [pg-promise][pg-promise] `Database` instance as their first argument, and return a promise. For further guidance, please refer to the [examples][examples] and [API Documentation][api-docs].
 
+### Options
+
+`collimator.tables()` also accepts a second optional `options` parameter. The following options are supported:
+
+- `looseNumbers` - when `true`, then 'loose number' mode will be enabled. In
+  this mode, numeric column types will be rendered to the JSON Schema document
+  as `{oneOf: [{type: 'number'}, {type: 'string', pattern: ...}]}`.
+
+  If the column is an integer or similar, then the regular expression `^\d+$`
+  will be used. For decimals, `^[1-9]\d*(\.\d+)?$` will be used.
+
 [pg-promise]: https://www.npmjs.com/package/pg-promise
 [examples]: https://github.com/radify/collimator/tree/master/examples
 [api-docs]: https://github.com/radify/collimator/blob/master/docs/API.md
