@@ -39,6 +39,13 @@ export interface Options {
    * or `string` with a pattern
    */
   looseNumbers?: boolean;
+  /**
+   * If `true`, then include columns that have a default value in the `required`
+   * array. This is useful for differentiating between the default `schema`
+   * inspector behaviour, and creating an additional Schema document that
+   * describes the result of a SELECT query, for example.
+   */
+  requireDefaults?: boolean;
 }
 
 /**

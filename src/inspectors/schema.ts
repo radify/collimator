@@ -240,7 +240,10 @@ export function isEnumConstraint(column: Column) {
  */
 export function required(columns: Column[], options: Options = {}): string[] {
   function isRequired(column: Column): boolean {
-    return column.nullable === false && column.default === null;
+    return column.nullable === false && (
+      column.default === null ||
+      options.requireDefaults === true
+    );
   }
 
   return columns
