@@ -40,9 +40,10 @@ export interface SchemaProperties {
  * standard
  */
 export interface PropertyAttributes {
-  type: string;
+  type: string | string[];
   readOnly?: boolean;
   enum?: any[];
+  oneOf?: PropertyAttributes[];
 }
 
 /**
@@ -163,13 +164,47 @@ export function property(column: Column, options: Options = {}): SchemaPropertie
     'timestamp with time zone': { type: 'string', format: 'date-time' }
   };
 
+  const matchedType = TYPES[column.type];
+
   return {
     [column.name]: mergeAll<PropertyAttributes>([
-      TYPES[column.type],
+      isNullable(column, matchedType),
       isReadOnly(column),
       isEnumConstraint(column)
     ])
   };
+}
+
+/**
+ * Determines if a schema property should multiple `type` entries if the column
+ * is nullable.
+ *
+ * If the schema property uses a single primitive type (eg. `{type: 'string'}`),
+ * then an additional `'null'` type will be added (eg. `{type: ['string',
+ * 'null']}`).
+ *
+ * If the schema property uses a complex compound type (eg. `{oneOf: [...]}`),
+ * then an additional `oneOf` entry will be added containing `{type: 'null'}`.
+ *
+ * @param column The column to inspect
+ * @param property The property to apply nullable type annotations to, if required
+ * @returns A shallow clone of `property`, with nullable type annotations
+ * appended, if required.
+ */
+export function isNullable(column: Column, property: PropertyAttributes): PropertyAttributes {
+  if (!column.nullable) {
+    return property;
+  }
+
+  if (property.oneOf) {
+    return Object.assign({}, property, {
+      oneOf: property.oneOf.concat({ type: 'null' })
+    });
+  }
+
+  return Object.assign({}, property, {
+    type: [].concat(property.type, 'null')
+  });
 }
 
 /**
