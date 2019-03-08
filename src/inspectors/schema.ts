@@ -71,7 +71,7 @@ export default function schema(db: IDatabase<any>, name: string, options: Option
  */
 export function table(name: string, columns: Column[], options: Options = {}): SchemaDocument {
   return {
-    $schema: 'http://json-schema.org/draft-04/schema#',
+    $schema: 'http://json-schema.org/draft-07/schema#',
     title: name,
     type: 'object',
     properties: properties(columns, options),
