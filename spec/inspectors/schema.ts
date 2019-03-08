@@ -54,7 +54,7 @@ describe('schema', () => {
       expect(mocks.required).toHaveBeenCalledWith(mocks.columns, {});
 
       expect(result).toEqual({
-        $schema: 'http://json-schema.org/draft-04/schema#',
+        $schema: 'http://json-schema.org/draft-07/schema#',
         title: 'myTable',
         type: 'object',
         properties: 'mockPropertyObject',

@@ -11,7 +11,7 @@ var expected = {
     primaryKeys: ['id'],
 
     schema: {
-      $schema: 'http://json-schema.org/draft-04/schema#',
+      $schema: 'http://json-schema.org/draft-07/schema#',
       title: 'users',
       type: 'object',
 
@@ -47,7 +47,7 @@ var expected = {
     name: 'tasks',
     primaryKeys: ['id'],
     schema: {
-      $schema: 'http://json-schema.org/draft-04/schema#',
+      $schema: 'http://json-schema.org/draft-07/schema#',
       title: 'tasks',
       type: 'object',
       properties: {
@@ -95,7 +95,7 @@ var expected = {
     name: 'task_watchers',
     primaryKeys: ['task_id', 'user_id'],
     schema: {
-      $schema: 'http://json-schema.org/draft-04/schema#',
+      $schema: 'http://json-schema.org/draft-07/schema#',
       title: 'task_watchers',
       type: 'object',
       properties: {
@@ -124,7 +124,7 @@ var expected = {
   views: [{
     name: 'completed_tasks',
     schema: {
-      $schema: 'http://json-schema.org/draft-04/schema#',
+      $schema: 'http://json-schema.org/draft-07/schema#',
       title: 'completed_tasks',
       type: 'object',
 
