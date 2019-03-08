@@ -20,11 +20,11 @@ var expected = {
         username: {type: 'string'},
         password: {type: 'string'},
         created_at: {
-          type: 'string',
+          type: ['string', 'null'],
           format: 'date-time'
         },
         updated_at: {
-          type: 'string',
+          type: ['string', 'null'],
           format: 'date-time'
         },
       },
@@ -59,18 +59,18 @@ var expected = {
           type: 'string'
         },
         description: {
-          type: 'string'
+          type: ['string', 'null']
         },
         status: {
-          type: 'string',
+          type: ['string', 'null'],
           enum: ['new', 'started', 'complete']
         },
         created_at: {
-          type: 'string',
+          type: ['string', 'null'],
           format: 'date-time'
         },
         updated_at: {
-          type: 'string',
+          type: ['string', 'null'],
           format: 'date-time'
         },
         owner: {
@@ -130,13 +130,13 @@ var expected = {
 
       properties: {
         id: {
-          type: 'number'
+          type: ['number', 'null']
         },
         username: {
-          type: 'string'
+          type: ['string', 'null']
         },
         completed: {
-          type: 'string',
+          type: ['string', 'null'],
           pattern: '^\\d+$'
         }
       },
