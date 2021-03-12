@@ -21,7 +21,7 @@ ON indexes.indrelid = attributes.attrelid
 AND attributes.attnum = ANY(indexes.indkey)
 
 LEFT JOIN (
-  SELECT conrelid, conkey, array_agg(consrc) AS constraints
+  SELECT conrelid, conkey, array_agg(pg_get_expr(conbin, conrelid)) AS constraints
   FROM pg_catalog.pg_constraint
   WHERE contype = 'c'
   GROUP BY conrelid, conkey

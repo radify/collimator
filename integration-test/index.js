@@ -7,41 +7,33 @@ var db = pg({database: 'collimator-integration-test'});
 
 var expected = {
   tables: [{
-    name: 'users',
-    primaryKeys: ['id'],
-
+    name: 'task_watchers',
+    primaryKeys: ['task_id', 'user_id'],
     schema: {
       $schema: 'http://json-schema.org/draft-07/schema#',
-      title: 'users',
+      title: 'task_watchers',
       type: 'object',
-
       properties: {
-        id: {type: 'number', readOnly: true},
-        username: {type: 'string'},
-        password: {type: 'string'},
-        created_at: {
-          type: ['string', 'null'],
-          format: 'date-time'
+        user_id: {
+          type: 'number'
         },
-        updated_at: {
-          type: ['string', 'null'],
-          format: 'date-time'
-        },
+        task_id: {
+          type: 'number'
+        }
       },
-
-      required: ['username', 'password']
+      required: ['user_id', 'task_id']
     },
     relationships: {
-      belongsTo: [],
-      has: [{
-        name: 'tasks',
-        from: 'id',
-        to: 'owner'
+      belongsTo: [{
+        name: 'users',
+        from: 'user_id',
+        to: 'id'
       }, {
-        name: 'task_watchers',
-        from: 'id',
-        to: 'user_id'
-      }]
+        name: 'tasks',
+        from: 'task_id',
+        to: 'id'
+      }],
+      has: []
     }
   }, {
     name: 'tasks',
@@ -92,33 +84,39 @@ var expected = {
       }]
     }
   }, {
-    name: 'task_watchers',
-    primaryKeys: ['task_id', 'user_id'],
+    name: 'users',
+    primaryKeys: ['id'],
     schema: {
       $schema: 'http://json-schema.org/draft-07/schema#',
-      title: 'task_watchers',
+      title: 'users',
       type: 'object',
+
       properties: {
-        user_id: {
-          type: 'number'
+        id: {type: 'number', readOnly: true},
+        username: {type: 'string'},
+        password: {type: 'string'},
+        created_at: {
+          type: ['string', 'null'],
+          format: 'date-time'
         },
-        task_id: {
-          type: 'number'
-        }
+        updated_at: {
+          type: ['string', 'null'],
+          format: 'date-time'
+        },
       },
-      required: ['user_id', 'task_id']
+      required: ['username', 'password']
     },
     relationships: {
-      belongsTo: [{
-        name: 'users',
-        from: 'user_id',
-        to: 'id'
-      }, {
+      belongsTo: [],
+      has: [{
         name: 'tasks',
-        from: 'task_id',
-        to: 'id'
-      }],
-      has: []
+        from: 'id',
+        to: 'owner'
+      }, {
+        name: 'task_watchers',
+        from: 'id',
+        to: 'user_id'
+      }]
     }
   }],
   views: [{
