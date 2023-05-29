@@ -139,6 +139,8 @@ export function property(column: Column, options: Options = {}): SchemaPropertie
     serial: TYPE_INTEGER,
     text: { type: 'string' },
 
+    uuid: { type: 'string', format: 'uuid' },
+
     interval: {
       type: 'object',
       format: 'interval',
